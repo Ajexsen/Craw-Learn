@@ -13,6 +13,7 @@ try:
 except ImportError:
     MPI = None
 
+
 def make_unity_env(env_directory, num_env, visual, start_index=0):
     """
     Create a wrapped, monitored Unity environment.
@@ -31,7 +32,7 @@ def make_unity_env(env_directory, num_env, visual, start_index=0):
         return DummyVecEnv([make_env(rank, use_visual=False)])
 
 def main():
-    env = make_unity_env('../unity_ml/Assets/ML-Agents/Examples/Tennis/Scenes/Tennis', 4, True)
+    env = make_unity_env('../tennis/Tennis', 4, True)
     ppo2.learn(
         network="mlp",
         env=env,
