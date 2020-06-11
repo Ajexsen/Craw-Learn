@@ -4,3 +4,4 @@ gym
 gym_unity
 mlagents #==0.16.0
 git+git://github.com/openai/baselines
+tensorflow # baseline dependency
