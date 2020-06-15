@@ -24,10 +24,9 @@ def episode(env, agent, nr_episode=0):
         next_state, reward, done, _ = env.step(action.numpy()[0])
         # 3. Integrate new experience into agent
 
-        # state = torch.cat(state).detach()
-        # action = torch.cat(action).detach()
-        # log_prob = torch.cat(log_prob).detach()
-        # reward = torch.cat(reward)
+        # state = state.detach()
+        action = action.detach()
+        log_prob = log_prob.detach()
 
         agent.update((state, action, log_prob, reward, next_state, done))
         state = next_state
