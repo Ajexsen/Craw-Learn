@@ -1,4 +1,8 @@
 import matplotlib.pyplot as plot
+import torchvision
+from torch import optim, device
+from torch.utils.tensorboard import SummaryWriter
+
 import src.ppo as a
 from gym_unity.envs import UnityToGymWrapper
 from mlagents_envs.environment import UnityEnvironment
@@ -25,19 +29,28 @@ def episode(env, agent, nr_episode=0):
     return undiscounted_return
 
 
-params = {}
 # Domain setup
 unity_env = UnityEnvironment(file_name="../crawler_single/UnityEnvironment", seed=1, side_channels=[])
 env = UnityToGymWrapper(unity_env=unity_env)
+# setup other continuous environment to check for bugs
 
-params["nr_actions"] = env.action_space.n
+params = {}
+
+params["nr_actions"] = env.action_space.shape[0]
 params["nr_input_features"] = env.observation_space.shape[0]
 params["env"] = env
 
 # Hyperparameters
-params["gamma"] = 0.99
-params["alpha"] = 0.001
+params["hidden_units"] = 256
+params["minibatch_size"] = 5
+#params["gamma"] = 0.99
+#params["alpha"] = 0.001
 training_episodes = 2000
+
+model = a.PPONet(params.nr_input_features, params.nr_actions, params.hidden_units).to(device)
+optimizer = optim.Adam(model.parameters())
+# welcher Optimizer?
+# welche dazugehörigen Parameter?
 
 # Agent setup
 agent = a.PPOLearner(params)
