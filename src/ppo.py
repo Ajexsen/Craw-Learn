@@ -101,6 +101,8 @@ class PPOLearner:
         self.alpha = params["alpha"]
         self.ppo_net = PPONet(self.nr_input_features, self.nr_output_features).to(self.device)
         self.optimizer = torch.optim.Adam(self.ppo_net.parameters(), lr=self.alpha)
+        self.ppo_epochs = params["ppo_epochs"]
+        self.clip_param = params["clip"]
 
 
     def policy(self, state):
@@ -116,13 +118,10 @@ class PPOLearner:
         return self.ppo_net.forward(states)
 
 
-    def update(self, transation):
-        self.memory.save(transation)
+    def update(self, transaction):
+        self.memory.save(transaction)
 
-        ppo_epochs = 4
-        clip_param = 0.2
-
-        for _ in range(ppo_epochs):
+        for _ in range(self.ppo_epochs):
             minibatch = self.memory.sample_batch(self.minibatch_size)
             states, actions, log_probs, rewards, next_states, dones = tuple(zip(*minibatch))
             # for state, action, old_log_probs, return_, advantage in tuple(zip(*minibatch)):
@@ -134,9 +133,10 @@ class PPOLearner:
 
                 ratio = (new_log_probs - old_log_probs).exp()
                 surr1 = ratio * advantage
-                surr2 = torch.clamp(ratio, 1.0 - clip_param, 1.0 + clip_param) * advantage
+                surr2 = torch.clamp(ratio, 1.0 - self.clip_param, 1.0 + self.clip_param) * advantage
 
                 actor_loss = - torch.min(surr1, surr2).mean()
+                # woher kommt die 2?
                 critic_loss = (reward - value).pow(2).mean()
 
                 loss = 0.5 * critic_loss + actor_loss - 0.001 * entropy

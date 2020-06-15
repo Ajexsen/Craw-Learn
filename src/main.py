@@ -57,6 +57,8 @@ params["hidden_units"] = 256
 params["minibatch_size"] = 5
 #params["gamma"] = 0.99
 params["alpha"] = 0.001
+params["ppo_epochs"] = 4
+params["clip"] = 0.2
 training_episodes = 2000
 
 #model = a.PPONet(params.nr_input_features, params.nr_output_features, params.hidden_units).to(device)
