@@ -104,16 +104,15 @@ class PPOLearner:
 
 
     def policy(self, state):
-        states = torch.FloatTensor(state).unsqueeze(0).to(self.device)
         #states = torch.tensor([state], device=self.device, dtype=torch.float)
-        print(self.predict(states))
         #action_dist, _ = self.ppo_net.critic(states)
-        action_dist, _ = self.predict(states)
+        action_dist, _ = self.predict(state)
         action = action_dist.sample().cpu()
         log_prob = action_dist.log_prob(action)
-        return action.numpy()[0], log_prob
+        return action, log_prob
 
     def predict(self, states):
+        states = torch.FloatTensor(states).unsqueeze(0).to(self.device)
         return self.ppo_net.forward(states)
 
 
@@ -125,13 +124,13 @@ class PPOLearner:
 
         for _ in range(ppo_epochs):
             minibatch = self.memory.sample_batch(self.minibatch_size)
-            tuple_batch = tuple(zip(*minibatch))
+            states, actions, log_probs, rewards, next_states, dones = tuple(zip(*minibatch))
             # for state, action, old_log_probs, return_, advantage in tuple(zip(*minibatch)):
-            for state, action, old_log_probs, reward, next_state, done in tuple_batch:
-                dist, value = self.ppo_net(state)
+            for state, action, old_log_probs, reward, next_state, done in zip(states, actions, log_probs, rewards, next_states, dones):
+                dist, value = self.predict(state)
                 advantage = reward - value
                 entropy = dist.entropy().mean()
-                new_log_probs = dist.log_prob(action)
+                new_log_probs = dist.log_prob(torch.tensor(action))
 
                 ratio = (new_log_probs - old_log_probs).exp()
                 surr1 = ratio * advantage

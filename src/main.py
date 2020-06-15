@@ -2,6 +2,7 @@ import matplotlib.pyplot as plot
 import torchvision
 from torch import optim, device
 from torch.utils.tensorboard import SummaryWriter
+import torch
 
 import src.ppo as a
 from gym_unity.envs import UnityToGymWrapper
@@ -10,6 +11,7 @@ from mlagents_envs.environment import UnityEnvironment
 
 def episode(env, agent, nr_episode=0):
     state = env.reset()
+    # state = torch.FloatTensor(state).to(device)
     undiscounted_return = 0
     discount_factor = 0.99
     done = False
@@ -19,8 +21,14 @@ def episode(env, agent, nr_episode=0):
         # 1. Select action according to policy
         action, log_prob = agent.policy(state)
         # 2. Execute selected action
-        next_state, reward, done, _ = env.step(action)
+        next_state, reward, done, _ = env.step(action.numpy()[0])
         # 3. Integrate new experience into agent
+
+        # state = torch.cat(state).detach()
+        # action = torch.cat(action).detach()
+        # log_prob = torch.cat(log_prob).detach()
+        # reward = torch.cat(reward)
+
         agent.update((state, action, log_prob, reward, next_state, done))
         state = next_state
         undiscounted_return += reward
