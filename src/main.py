@@ -1,5 +1,8 @@
 import matplotlib.pyplot as plot
-import gym
+import src.ppo as a
+from gym_unity.envs import UnityToGymWrapper
+from mlagents_envs.environment import UnityEnvironment
+
 
 def episode(env, agent, nr_episode=0):
     state = env.reset()
@@ -20,12 +23,13 @@ def episode(env, agent, nr_episode=0):
         time_step += 1
     print(nr_episode, ":", undiscounted_return)
     return undiscounted_return
-    
+
+
 params = {}
 # Domain setup
-env = gym.make('MountainCar-v0')
-#env = gym.make('Acrobot-v1')
-#env = gym.make('CartPole-v1')
+unity_env = UnityEnvironment(file_name="../crawler_single/UnityEnvironment", seed=1, side_channels=[])
+env = UnityToGymWrapper(unity_env=unity_env)
+
 params["nr_actions"] = env.action_space.n
 params["nr_input_features"] = env.observation_space.shape[0]
 params["env"] = env
@@ -36,13 +40,13 @@ params["alpha"] = 0.001
 training_episodes = 2000
 
 # Agent setup
-agent = a.A2CLearner(params)
+agent = a.PPOLearner(params)
 returns = [episode(env, agent, i) for i in range(training_episodes)]
 
 x = range(training_episodes)
 y = returns
 
-plot.plot(x,y)
+plot.plot(x, y)
 plot.title("Progress")
 plot.xlabel("episode")
 plot.ylabel("undiscounted return")
