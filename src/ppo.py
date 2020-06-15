@@ -7,12 +7,13 @@ from torch.distributions import Categorical
 from torch.distributions import Normal
 
 class PPONet(nn.Module):
-
+    # TODO was ist m
     def init_weights(m):
         if isinstance(m, nn.Linear):
             # Fills the input Tensor with values drawn from the normal distribution
             nn.init.normal_(m.weight, mean=0., std=0.1)
             # der tensor bias wird mit den Werten 0.1 gefüllt, Warum??
+            # TODO was macht der Bias
             nn.init.constant_(m.bias, 0.1)
 
 
@@ -41,17 +42,21 @@ class PPONet(nn.Module):
         # müsste einen Tensor mit Form (1, (env.action_space.shape[0])) erzeugen, jedes Element hat den Wert std
         self.log_std = nn.Parameter(torch.ones(1, num_outputs) * std)
 
-        #Applies fn recursively to every submodule as well as self
+        #Applies fn recursively to every submodule as well as self TODO was bedeutet fn recursively
         self.apply(self.init_weights)
 
     def forward(self, x):
         # müsste value vorhersagen
         value = self.critic(x)
+
         # müsste Mittelwert der nächsten Aktionsauswahl zurückgeben
         mu = self.actor(x)
+
         # was ist std?(normalverteilung scheint lange her zu sein...) expand_as bringt mu in dieselbe Form wie self.log_std
+        # TODO was macht das hier genau?
         std = self.log_std.exp().expand_as(mu)
-        # erzeugt eine Normalverteilung mit den Erwartungswerten der ausgeählten Aktion und der Standardabweichung std
+
+        # erzeugt eine Normalverteilung mit den Erwartungswerten der ausgewählten Aktion und der Standardabweichung std
         dist = Normal(mu, std)
         return dist, value
 
