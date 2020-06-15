@@ -130,7 +130,7 @@ class PPOLearner:
                 dist, value = self.predict(state)
                 advantage = reward - value
                 entropy = dist.entropy().mean()
-                new_log_probs = dist.log_prob(torch.tensor(action))
+                new_log_probs = dist.log_prob(action)
 
                 ratio = (new_log_probs - old_log_probs).exp()
                 surr1 = ratio * advantage

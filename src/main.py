@@ -3,6 +3,7 @@ import torchvision
 from torch import optim, device
 from torch.utils.tensorboard import SummaryWriter
 import torch
+import gym
 
 import src.ppo as a
 from gym_unity.envs import UnityToGymWrapper
@@ -36,9 +37,11 @@ def episode(env, agent, nr_episode=0):
     return undiscounted_return
 
 
-# Domain setup
-unity_env = UnityEnvironment(file_name="../crawler_single/UnityEnvironment", seed=1, side_channels=[])
-env = UnityToGymWrapper(unity_env=unity_env)
+# # Domain setup
+# unity_env = UnityEnvironment(file_name="../crawler_single/UnityEnvironment", seed=1, side_channels=[])
+# env = UnityToGymWrapper(unity_env=unity_env)
+
+env = gym.make("MountainCarContinuous-v0")
 # setup other continuous environment to check for bugs
 
 params = {}
