@@ -6,6 +6,7 @@ import torch.nn.functional as F
 from torch.distributions import Categorical
 from torch.distributions import Normal
 
+import numpy as np
 
 # TODO was ist m
 def init_weights(m):
@@ -15,6 +16,32 @@ def init_weights(m):
         # der tensor bias wird mit den Werten 0.1 gefüllt, Warum??
         # TODO was macht der Bias
         nn.init.constant_(m.bias, 0.1)
+
+"""
+ Experience Buffer for Deep RL Algorithms.
+"""
+class ReplayMemory:
+
+    def __init__(self, size):
+        self.transitions = []
+        self.size = size
+
+    def save(self, transition):
+        self.transitions.append(transition)
+        if len(self.transitions) > self.size:
+            self.transitions.pop(0)
+
+    def sample_batch(self, minibatch_size):
+        nr_episodes = len(self.transitions)
+        if nr_episodes > minibatch_size:
+            return random.sample(self.transitions, minibatch_size)
+        return self.transitions
+
+    def clear(self):
+        self.transitions.clear()
+
+    def size(self):
+        return len(self.transitions)
 
 
 class PPONet(nn.Module):
@@ -69,22 +96,52 @@ class PPOLearner:
         self.device = torch.device("cpu")
         self.nr_output_features = params["nr_output_features"]
         self.nr_input_features = params["nr_input_features"]
-
+        self.minibatch_size = params["minibatch_size"]
+        self.memory = ReplayMemory(params["memory_capacity"])
+        self.alpha = params["alpha"]
         self.ppo_net = PPONet(self.nr_input_features, self.nr_output_features).to(self.device)
+        self.optimizer = torch.optim.Adam(self.ppo_net.parameters(), lr=self.alpha)
 
 
     def policy(self, state):
-
         states = torch.FloatTensor(state).unsqueeze(0).to(self.device)
         #states = torch.tensor([state], device=self.device, dtype=torch.float)
         print(self.predict(states))
         #action_dist, _ = self.ppo_net.critic(states)
         action_dist, _ = self.predict(states)
-        return action_dist.sample().cpu().numpy()[0]
+        action = action_dist.sample().cpu()
+        log_prob = action_dist.log_prob(action)
+        return action.numpy()[0], log_prob
 
     def predict(self, states):
         return self.ppo_net.forward(states)
 
 
-    def update(self, state, action, reward, next_state, done):
-        pass;
+    def update(self, transation):
+        self.memory.save(transation)
+
+        ppo_epochs = 4
+        clip_param = 0.2
+
+        for _ in range(ppo_epochs):
+            minibatch = self.memory.sample_batch(self.minibatch_size)
+            tuple_batch = tuple(zip(*minibatch))
+            # for state, action, old_log_probs, return_, advantage in tuple(zip(*minibatch)):
+            for state, action, old_log_probs, reward, next_state, done in tuple_batch:
+                dist, value = self.ppo_net(state)
+                advantage = reward - value
+                entropy = dist.entropy().mean()
+                new_log_probs = dist.log_prob(action)
+
+                ratio = (new_log_probs - old_log_probs).exp()
+                surr1 = ratio * advantage
+                surr2 = torch.clamp(ratio, 1.0 - clip_param, 1.0 + clip_param) * advantage
+
+                actor_loss = - torch.min(surr1, surr2).mean()
+                critic_loss = (reward - value).pow(2).mean()
+
+                loss = 0.5 * critic_loss + actor_loss - 0.001 * entropy
+
+                self.optimizer.zero_grad()
+                loss.backward()
+                self.optimizer.step()

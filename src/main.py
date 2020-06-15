@@ -17,11 +17,11 @@ def episode(env, agent, nr_episode=0):
     while not done:
         env.render()
         # 1. Select action according to policy
-        action = agent.policy(state)
+        action, log_prob = agent.policy(state)
         # 2. Execute selected action
         next_state, reward, done, _ = env.step(action)
         # 3. Integrate new experience into agent
-        agent.update(state, action, reward, next_state, done)
+        agent.update((state, action, log_prob, reward, next_state, done))
         state = next_state
         undiscounted_return += reward
         time_step += 1
@@ -38,13 +38,15 @@ params = {}
 
 params["nr_output_features"] = env.action_space.shape[0]
 params["nr_input_features"] = env.observation_space.shape[0]
+params["memory_capacity"] = 5000
+params["minibatch_size"] = 32
 params["env"] = env
 
 # Hyperparameters
 params["hidden_units"] = 256
 params["minibatch_size"] = 5
 #params["gamma"] = 0.99
-#params["alpha"] = 0.001
+params["alpha"] = 0.001
 training_episodes = 2000
 
 #model = a.PPONet(params.nr_input_features, params.nr_output_features, params.hidden_units).to(device)
