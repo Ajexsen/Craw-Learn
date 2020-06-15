@@ -78,15 +78,13 @@ class PPOLearner:
         states = torch.FloatTensor(state).unsqueeze(0).to(self.device)
         #states = torch.tensor([state], device=self.device, dtype=torch.float)
         print(self.predict_policy(states))
+        #action_dist, _ = self.ppo_net.critic(states)
         action_dist, _ = self.predict_policy(states)
         return action_dist.sample().cpu().numpy()[0]
 
-    def predict_policy(self, states):
-        return self.ppo_net.actor(states)
+    def predict(self, states):
+        return self.ppo_net.forward(states)
 
 
-    def predict_value(self, states):
-        return self.ppo_net.critic(states)
-
-    def update(self):
+    def update(self, state, action, reward, next_state, done):
         pass;
