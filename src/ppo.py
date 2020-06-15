@@ -6,15 +6,18 @@ import torch.nn.functional as F
 from torch.distributions import Categorical
 from torch.distributions import Normal
 
+
+# TODO was ist m
+def init_weights(m):
+    if isinstance(m, nn.Linear):
+        # Fills the input Tensor with values drawn from the normal distribution
+        nn.init.normal_(m.weight, mean=0., std=0.1)
+        # der tensor bias wird mit den Werten 0.1 gefüllt, Warum??
+        # TODO was macht der Bias
+        nn.init.constant_(m.bias, 0.1)
+
+
 class PPONet(nn.Module):
-    # TODO was ist m
-    def init_weights(m):
-        if isinstance(m, nn.Linear):
-            # Fills the input Tensor with values drawn from the normal distribution
-            nn.init.normal_(m.weight, mean=0., std=0.1)
-            # der tensor bias wird mit den Werten 0.1 gefüllt, Warum??
-            # TODO was macht der Bias
-            nn.init.constant_(m.bias, 0.1)
 
 
     #######################
@@ -43,7 +46,7 @@ class PPONet(nn.Module):
         self.log_std = nn.Parameter(torch.ones(1, num_outputs) * std)
 
         #Applies fn recursively to every submodule as well as self TODO was bedeutet fn recursively
-        self.apply(self.init_weights)
+        self.apply(init_weights)
 
     def forward(self, x):
         # müsste value vorhersagen
@@ -63,17 +66,27 @@ class PPONet(nn.Module):
 class PPOLearner:
 
     def __init__(self, params):
-        self.ppo_net = PPONet(self.nr_input_features, self.nr_actions).to(self.device)
+        self.device = torch.device("cpu")
+        self.nr_output_features = params["nr_output_features"]
+        self.nr_input_features = params["nr_input_features"]
+
+        self.ppo_net = PPONet(self.nr_input_features, self.nr_output_features).to(self.device)
 
 
-    def policy(self):
-        pass;
+    def policy(self, state):
 
-    def predict_policy(self):
-        pass;
+        states = torch.FloatTensor(state).unsqueeze(0).to(self.device)
+        #states = torch.tensor([state], device=self.device, dtype=torch.float)
+        print(self.predict_policy(states))
+        action_dist, _ = self.predict_policy(states)
+        return action_dist.sample().cpu().numpy()[0]
 
-    def predict_value(self):
-        pass;
+    def predict_policy(self, states):
+        return self.ppo_net.actor(states)
+
+
+    def predict_value(self, states):
+        return self.ppo_net.critic(states)
 
     def update(self):
         pass;

@@ -36,7 +36,7 @@ env = UnityToGymWrapper(unity_env=unity_env)
 
 params = {}
 
-params["nr_actions"] = env.action_space.shape[0]
+params["nr_output_features"] = env.action_space.shape[0]
 params["nr_input_features"] = env.observation_space.shape[0]
 params["env"] = env
 
@@ -47,8 +47,8 @@ params["minibatch_size"] = 5
 #params["alpha"] = 0.001
 training_episodes = 2000
 
-model = a.PPONet(params.nr_input_features, params.nr_actions, params.hidden_units).to(device)
-optimizer = optim.Adam(model.parameters())
+#model = a.PPONet(params.nr_input_features, params.nr_output_features, params.hidden_units).to(device)
+#optimizer = optim.Adam(model.parameters())
 # welcher Optimizer?
 # welche dazugehörigen Parameter?
 
