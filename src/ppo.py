@@ -5,17 +5,9 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch.distributions import Categorical
 from torch.distributions import Normal
-
+import math
 import numpy as np
-
-# TODO was ist m
-def init_weights(m):
-    if isinstance(m, nn.Linear):
-        # Fills the input Tensor with values drawn from the normal distribution
-        nn.init.normal_(m.weight, mean=0., std=0.1)
-        # der tensor bias wird mit den Werten 0.1 gefüllt, Warum??
-        # TODO was macht der Bias
-        nn.init.constant_(m.bias, 0.1)
+import os
 
 """
  Experience Buffer for Deep RL Algorithms.
@@ -56,10 +48,12 @@ class PPONet(nn.Module):
     def __init__(self, num_inputs, num_outputs, std=0.0):
         super(PPONet, self).__init__()
         # 64 hidden-units in der Übung 5, in RL- Adventure 256 units
-        nr_hidden_units = 64
+        nr_hidden_units = 256
 
         self.critic = nn.Sequential(
             nn.Linear(num_inputs, nr_hidden_units),
+            nn.ReLU(),
+            nn.Linear(nr_hidden_units, nr_hidden_units),
             nn.ReLU(),
             nn.Linear(nr_hidden_units, 1)
         )
@@ -67,19 +61,17 @@ class PPONet(nn.Module):
         self.actor = nn.Sequential(
             nn.Linear(num_inputs, nr_hidden_units),
             nn.ReLU(),
+            nn.Linear(nr_hidden_units, nr_hidden_units),
+            nn.ReLU(),
             nn.Linear(nr_hidden_units, num_outputs),
         )
         # müsste einen Tensor mit Form (1, (env.action_space.shape[0])) erzeugen, jedes Element hat den Wert std
         self.log_std = nn.Parameter(torch.ones(1, num_outputs) * std)
 
-        #Applies fn recursively to every submodule as well as self TODO was bedeutet fn recursively
-        self.apply(init_weights)
 
     def forward(self, x):
-        # müsste value vorhersagen
         value = self.critic(x)
 
-        # müsste Mittelwert der nächsten Aktionsauswahl zurückgeben
         mu = self.actor(x)
 
         # was ist std?(normalverteilung scheint lange her zu sein...) expand_as bringt mu in dieselbe Form wie self.log_std
@@ -99,7 +91,10 @@ class PPOLearner:
         self.minibatch_size = params["minibatch_size"]
         self.memory = ReplayMemory(params["memory_capacity"])
         self.alpha = params["alpha"]
-        self.ppo_net = PPONet(self.nr_input_features, self.nr_output_features).to(self.device)
+        if os.path.isfile('PPONet_190620_crawler.pt'):
+            self.ppo_net = torch.load('PPONet_190620_crawler.pt')
+        else:
+            self.ppo_net = PPONet(self.nr_input_features, self.nr_output_features).to(self.device)
         self.optimizer = torch.optim.Adam(self.ppo_net.parameters(), lr=self.alpha)
 
 
@@ -112,15 +107,14 @@ class PPOLearner:
         return action, log_prob
 
     def predict(self, states):
-        states = torch.FloatTensor(states).unsqueeze(0).to(self.device)
+        states = torch.FloatTensor(states).unsqueeze(0).to(self.device).detach()
         return self.ppo_net.forward(states)
 
+    def update(self):
 
-    def update(self, transation):
-        self.memory.save(transation)
-
-        ppo_epochs = 4
+        ppo_epochs = math.ceil(len(self.memory.transitions)/(self.minibatch_size*20))
         clip_param = 0.2
+
 
         for _ in range(ppo_epochs):
             minibatch = self.memory.sample_batch(self.minibatch_size)
@@ -130,7 +124,7 @@ class PPOLearner:
                 dist, value = self.predict(state)
                 advantage = reward - value
                 entropy = dist.entropy().mean()
-                new_log_probs = dist.log_prob(torch.tensor(action))
+                new_log_probs = dist.log_prob(action)
 
                 ratio = (new_log_probs - old_log_probs).exp()
                 surr1 = ratio * advantage
@@ -139,7 +133,7 @@ class PPOLearner:
                 actor_loss = - torch.min(surr1, surr2).mean()
                 critic_loss = (reward - value).pow(2).mean()
 
-                loss = 0.5 * critic_loss + actor_loss - 0.001 * entropy
+                loss = 0.5 * critic_loss + actor_loss - 0.01 * entropy
 
                 self.optimizer.zero_grad()
                 loss.backward()

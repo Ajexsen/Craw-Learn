@@ -3,6 +3,7 @@ import torchvision
 from torch import optim, device
 from torch.utils.tensorboard import SummaryWriter
 import torch
+import gym
 
 import src.ppo as a
 from gym_unity.envs import UnityToGymWrapper
@@ -24,21 +25,27 @@ def episode(env, agent, nr_episode=0):
         next_state, reward, done, _ = env.step(action.numpy()[0])
         # 3. Integrate new experience into agent
 
-        # state = state.detach()
+        #state = state.detach()
         action = action.detach()
         log_prob = log_prob.detach()
+        agent.memory.save((state, action, log_prob, reward, next_state, done))
 
-        agent.update((state, action, log_prob, reward, next_state, done))
+        if time_step % 4000 == 0 and time_step != 0:
+            agent.update((state, action, log_prob, reward, next_state, done))
+
         state = next_state
         undiscounted_return += reward
         time_step += 1
     print(nr_episode, ":", undiscounted_return)
+    torch.save(agent.ppo_net, "PPONet_190620_crawler.pt")
     return undiscounted_return
 
 
 # Domain setup
 unity_env = UnityEnvironment(file_name="../crawler_single/UnityEnvironment", seed=1, side_channels=[])
 env = UnityToGymWrapper(unity_env=unity_env)
+#env = gym.make('MountainCarContinuous-v0')
+env._max_episode_steps = 1500
 # setup other continuous environment to check for bugs
 
 params = {}
@@ -51,10 +58,10 @@ params["env"] = env
 
 # Hyperparameters
 params["hidden_units"] = 256
-params["minibatch_size"] = 5
+params["minibatch_size"] = 32
 #params["gamma"] = 0.99
 params["alpha"] = 0.001
-training_episodes = 2000
+training_episodes = 20000
 
 #model = a.PPONet(params.nr_input_features, params.nr_output_features, params.hidden_units).to(device)
 #optimizer = optim.Adam(model.parameters())
@@ -64,6 +71,8 @@ training_episodes = 2000
 # Agent setup
 agent = a.PPOLearner(params)
 returns = [episode(env, agent, i) for i in range(training_episodes)]
+
+torch.save(agent.ppo_net, "PPONet_190620")
 
 x = range(training_episodes)
 y = returns
