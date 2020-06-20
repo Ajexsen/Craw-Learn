@@ -93,7 +93,7 @@ class PPOLearner:
         self.alpha = params["alpha"]
         self.ppo_net = PPONet(self.nr_input_features, self.nr_output_features).to(self.device)
         self.optimizer = torch.optim.Adam(self.ppo_net.parameters(), lr=self.alpha)
-        #self.ppo_epochs = params["ppo_epochs"]
+        self.ppo_epochs = params["ppo_epochs"]
         self.clip_param = params["clip"]
 
 
