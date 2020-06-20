@@ -40,7 +40,7 @@ class PPONet(nn.Module):
 
 
     #######################
-    # nur fürs Verständnis:
+    # nur fürs Verstaendnis:
     # num_inputs  = envs.observation_space.shape[0]
     # num_outputs = envs.action_space.shape[0]
     ######################
@@ -78,7 +78,7 @@ class PPONet(nn.Module):
         # TODO was macht das hier genau?
         std = self.log_std.exp().expand_as(mu)
 
-        # erzeugt eine Normalverteilung mit den Erwartungswerten der ausgewählten Aktion und der Standardabweichung std
+        # erzeugt eine Normalverteilung mit den Erwartungswerten der ausgewaehlten Aktion und der Standardabweichung std
         dist = Normal(mu, std)
         return dist, value
 
@@ -93,7 +93,7 @@ class PPOLearner:
         self.alpha = params["alpha"]
         self.ppo_net = PPONet(self.nr_input_features, self.nr_output_features).to(self.device)
         self.optimizer = torch.optim.Adam(self.ppo_net.parameters(), lr=self.alpha)
-        self.ppo_epochs = params["ppo_epochs"]
+        #self.ppo_epochs = params["ppo_epochs"]
         self.clip_param = params["clip"]
 
 
@@ -110,9 +110,6 @@ class PPOLearner:
         return self.ppo_net.forward(states)
 
     def update(self):
-
-        ppo_epochs = math.ceil(len(self.memory.transitions)/(self.minibatch_size*20))
-        clip_param = 0.2
 
         for _ in range(self.ppo_epochs):
 
