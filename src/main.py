@@ -28,10 +28,12 @@ def episode(env, agent, nr_episode=0):
         #state = state.detach()
         action = action.detach()
         log_prob = log_prob.detach()
+        state = torch.FloatTensor(state).unsqueeze(0).to(torch.device("cpu")).detach()
         agent.memory.save(log_prob, value, state, action, reward, done)
 
-        if time_step % 4096 == 0 and time_step != 0:
+        if time_step % 4095 == 0 and time_step != 0:
             agent.update(next_state)
+            agent.memory.save(log_prob, value, state, action, reward, done)
 
         state = next_state
         undiscounted_return += reward

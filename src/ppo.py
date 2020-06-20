@@ -39,6 +39,12 @@ class ReplayMemory:
         advantages = returns - values
         batch_size = len(self.states)
         ids = np.random.permutation(batch_size)
+        print(len(self.states))
+        print(len(self.log_probs))
+        print(len(self.values))
+        print(len(self.actions))
+        print(len(self.rewards))
+        print(len(self.dones))
         ids = np.split(ids, batch_size // minibatch_size)
 
         for i in range(len(ids)):
