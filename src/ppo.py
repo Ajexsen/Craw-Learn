@@ -91,11 +91,10 @@ class PPOLearner:
         self.minibatch_size = params["minibatch_size"]
         self.memory = ReplayMemory(params["memory_capacity"])
         self.alpha = params["alpha"]
-        if os.path.isfile('PPONet_190620_crawler.pt'):
-            self.ppo_net = torch.load('PPONet_190620_crawler.pt')
-        else:
-            self.ppo_net = PPONet(self.nr_input_features, self.nr_output_features).to(self.device)
+        self.ppo_net = PPONet(self.nr_input_features, self.nr_output_features).to(self.device)
         self.optimizer = torch.optim.Adam(self.ppo_net.parameters(), lr=self.alpha)
+        self.ppo_epochs = params["ppo_epochs"]
+        self.clip_param = params["clip"]
 
 
     def policy(self, state):
@@ -115,8 +114,8 @@ class PPOLearner:
         ppo_epochs = math.ceil(len(self.memory.transitions)/(self.minibatch_size*20))
         clip_param = 0.2
 
+        for _ in range(self.ppo_epochs):
 
-        for _ in range(ppo_epochs):
             minibatch = self.memory.sample_batch(self.minibatch_size)
             states, actions, log_probs, rewards, next_states, dones = tuple(zip(*minibatch))
             # for state, action, old_log_probs, return_, advantage in tuple(zip(*minibatch)):
@@ -128,9 +127,10 @@ class PPOLearner:
 
                 ratio = (new_log_probs - old_log_probs).exp()
                 surr1 = ratio * advantage
-                surr2 = torch.clamp(ratio, 1.0 - clip_param, 1.0 + clip_param) * advantage
+                surr2 = torch.clamp(ratio, 1.0 - self.clip_param, 1.0 + self.clip_param) * advantage
 
                 actor_loss = - torch.min(surr1, surr2).mean()
+                # woher kommt die 2?
                 critic_loss = (reward - value).pow(2).mean()
 
                 loss = 0.5 * critic_loss + actor_loss - 0.01 * entropy
