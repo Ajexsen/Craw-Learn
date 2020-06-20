@@ -21,11 +21,15 @@ class ActorCritic(nn.Module):
         self.critic = nn.Sequential(
             nn.Linear(num_inputs, hidden_size),
             nn.ReLU(),
+            nn.Linear(hidden_size, hidden_size),
+            nn.ReLU(),
             nn.Linear(hidden_size, 1)
         )
         
         self.actor = nn.Sequential(
             nn.Linear(num_inputs, hidden_size),
+            nn.ReLU(),
+            nn.Linear(hidden_size,hidden_size),
             nn.ReLU(),
             nn.Linear(hidden_size, num_outputs),
         )
@@ -42,8 +46,8 @@ class ActorCritic(nn.Module):
 
 
 
-def plot(frame_idx, rewards):
-    frames = [x*2048 for x in range(1, len(rewards)+1)]
+def plot(frame_idx, test_interval, rewards):
+    frames = [x*test_interval for x in range(1, len(rewards)+1)]
     print(frames)
     print("frame: " + str(frame_idx) + "  len(rewards): " + str(len(rewards)))
     clear_output(True)
@@ -139,11 +143,12 @@ def test_env(model, env, device, vis=True):
 
 
 
-def ppo(hidden_size, lr, num_steps, mini_batch_size, epochs, threshold_reward, entropy_beta, critic_loss_mp, is_unity=False):
+def ppo(hidden_size, lr, num_steps, mini_batch_size, ppo_epochs, threshold_reward, entropy_beta, critic_loss_mp, test_interval, is_unity=False):
 
 
     IS_UNITY = is_unity
     envs = get_environment(is_unity=IS_UNITY)
+    envs._max_episode_steps = 4000
 
     use_cuda = torch.cuda.is_available()
     device = torch.device("cuda" if use_cuda else "cpu")
@@ -170,15 +175,15 @@ def ppo(hidden_size, lr, num_steps, mini_batch_size, epochs, threshold_reward, e
 
         for _ in range(num_steps):
 
-            if frame_idx != 0 and frame_idx % 4096 == 0:
+            if frame_idx != 0 and frame_idx % test_interval == 0:
                 test_reward = test_env(model=model, device=device, env=envs)  # np.mean([test_env(model=model) for _ in range(1)])
                 test_rewards.append(test_reward)
-                plot(frame_idx, test_rewards)
+                plot(frame_idx, test_interval, test_rewards)
                 if test_reward > threshold_reward: early_stop = True
 
             if not IS_UNITY: envs.render()
 
-            state = torch.FloatTensor(state).to(device)# if not done else torch.FloatTensor(envs.reset())
+            state = torch.FloatTensor(state).to(device) if (IS_UNITY or not done) else torch.FloatTensor(envs.reset())
             dist, value = model(state)
 
             action = dist.sample()
@@ -213,7 +218,8 @@ def ppo(hidden_size, lr, num_steps, mini_batch_size, epochs, threshold_reward, e
         print("")
         print("update number: " + str(frame_idx / num_steps))
         print("")
-    torch.save(net.state_dict(), "model")
+        if frame_idx == 500000 or frame_idx == 750000 or frame_idx == 1000000 or frame_idx == 1500000:
+            torch.save(net.state_dict(), "model")
 
 
 
@@ -222,15 +228,16 @@ def ppo(hidden_size, lr, num_steps, mini_batch_size, epochs, threshold_reward, e
 if __name__ == '__main__':
 
     # hyper parameters:                       CRAWLER         CAR
-    hidden_size      = 512             #      512      #    256
-    lr               = 3e-4            #      3e-4     #    3e-4
-    num_steps        = 512             #      2048     #    2048
-    mini_batch_size  = 32              #      32       #    32
-    ppo_epochs       = 5               #      3        #    10
-    threshold_reward = 90              #      400      #    90
-    entropy_beta     = 0.002
+    hidden_size      = 128              #      512      #    256
+    lr               = 3e-4             #      3e-4     #    3e-4
+    num_steps        = 1024              #      2048     #    2048
+    mini_batch_size  = 32               #      32       #    32
+    ppo_epochs       = 10                #      3        #    10
+    threshold_reward = 400              #      400      #    90
+    entropy_beta     = 0.002                                             # 0.01
     critic_loss_mp   = 0.5
+    test_interval   = 4000
 
-    ppo(is_unity=True, hidden_size=hidden_size, lr=lr, num_steps=num_steps, mini_batch_size=mini_batch_size,
-        epochs=ppo_epochs, threshold_reward=threshold_reward, entropy_beta=entropy_beta, critic_loss_mp=critic_loss_mp)
+    ppo(is_unity=True, hidden_size=hidden_size, lr=lr, num_steps=num_steps, mini_batch_size=mini_batch_size, ppo_epochs=ppo_epochs,
+        threshold_reward=threshold_reward, entropy_beta=entropy_beta, critic_loss_mp=critic_loss_mp, test_interval=test_interval)
 
