@@ -66,7 +66,8 @@ training_episodes = 20000
 #model = a.PPONet(params.nr_input_features, params.nr_output_features, params.hidden_units).to(device)
 #optimizer = optim.Adam(model.parameters())
 # welcher Optimizer?
-# welche dazugehörigen Parameter?
+# welche dazugeho
+# erigen Parameter?
 
 # Agent setup
 agent = a.PPOLearner(params)

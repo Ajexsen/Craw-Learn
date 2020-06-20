@@ -40,14 +40,14 @@ class PPONet(nn.Module):
 
 
     #######################
-    # nur fürs Verständnis:
+    # nur fuers Verstaendnis:
     # num_inputs  = envs.observation_space.shape[0]
     # num_outputs = envs.action_space.shape[0]
     ######################
 
     def __init__(self, num_inputs, num_outputs, std=0.0):
         super(PPONet, self).__init__()
-        # 64 hidden-units in der Übung 5, in RL- Adventure 256 units
+        # 64 hidden-units in der uebung 5, in RL- Adventure 256 units
         nr_hidden_units = 256
 
         self.critic = nn.Sequential(
@@ -65,7 +65,7 @@ class PPONet(nn.Module):
             nn.ReLU(),
             nn.Linear(nr_hidden_units, num_outputs),
         )
-        # müsste einen Tensor mit Form (1, (env.action_space.shape[0])) erzeugen, jedes Element hat den Wert std
+        # muesste einen Tensor mit Form (1, (env.action_space.shape[0])) erzeugen, jedes Element hat den Wert std
         self.log_std = nn.Parameter(torch.ones(1, num_outputs) * std)
 
 
@@ -78,7 +78,7 @@ class PPONet(nn.Module):
         # TODO was macht das hier genau?
         std = self.log_std.exp().expand_as(mu)
 
-        # erzeugt eine Normalverteilung mit den Erwartungswerten der ausgewählten Aktion und der Standardabweichung std
+        # erzeugt eine Normalverteilung mit den Erwartungswerten der ausgewaehlten Aktion und der Standardabweichung std
         dist = Normal(mu, std)
         return dist, value
 
