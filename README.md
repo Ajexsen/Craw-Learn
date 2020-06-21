@@ -1,11 +1,13 @@
 # Federer-Jr.
 
 Crawler
-Gym-Unity
+UnityToGymWrapper
 Pytorch
+Optuna
+Tensorboard
 
 ## Fragen
-* Wie können wir das Multiprocessing-Env einbinden?
-* Was macht 'detach'?
-* Bis wann sollte die Implementierung fertig sein?
-* Wie entdeckt man Algorithmus-Implementierungsfehler (ohne Crash, vor der Durchführung vieler Stunden an Experimenten)?
+* Wie kann man beim CIP-Pool den Build anwenden?
+* Vorgehensweise: 25 trainieren, schlecht trainierte wegwerfen?
+* Was erwartet er von uns?
+* Hyperparametertuning alle Hyperparameter geht nicht, welche sind am wichtigsten?
