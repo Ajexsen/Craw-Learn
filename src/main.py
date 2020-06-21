@@ -31,9 +31,8 @@ def episode(env, agent, nr_episode=0):
         state = torch.FloatTensor(state).unsqueeze(0).to(torch.device("cpu")).detach()
         agent.memory.save(log_prob, value, state, action, reward, done)
 
-        if time_step % 4095 == 0 and time_step != 0:
+        if time_step % 4096 == 0 and time_step != 0:
             agent.update(next_state)
-            agent.memory.save(log_prob, value, state, action, reward, done)
 
         state = next_state
         undiscounted_return += reward
@@ -54,7 +53,6 @@ params = {}
 
 params["nr_output_features"] = env.action_space.shape[0]
 params["nr_input_features"] = env.observation_space.shape[0]
-params["minibatch_size"] = 32
 params["env"] = env
 
 # Hyperparameters
@@ -63,6 +61,7 @@ params["minibatch_size"] = 32
 #params["gamma"] = 0.99
 # learning rate = alpha
 params["alpha"] = 3e-3
+params["beta"] = 0.005
 training_episodes = 20000
 
 params["ppo_epochs"] = 4
@@ -74,7 +73,7 @@ params["clip"] = 0.2
 # erigen Parameter?
 
 # Agent setup
-time_step = 0
+time_step = 1
 agent = a.PPOLearner(params)
 returns = [episode(env, agent, i) for i in range(training_episodes)]
 
