@@ -39,12 +39,6 @@ class ReplayMemory:
         advantages = returns - values
         batch_size = len(self.states)
         ids = np.random.permutation(batch_size)
-        print(len(self.states))
-        print(len(self.log_probs))
-        print(len(self.values))
-        print(len(self.actions))
-        print(len(self.rewards))
-        print(len(self.dones))
         ids = np.split(ids, batch_size // minibatch_size)
 
         for i in range(len(ids)):
@@ -79,25 +73,24 @@ class PPONet(nn.Module):
     # num_outputs = envs.action_space.shape[0]
     ######################
 
-    def __init__(self, num_inputs, num_outputs, std=0.0):
+    def __init__(self, num_inputs, num_outputs, hidden_units, std=0.0):
         super(PPONet, self).__init__()
         # 64 hidden-units in der Uebung 5, in RL- Adventure 256 units
-        nr_hidden_units = 256
 
         self.critic = nn.Sequential(
-            nn.Linear(num_inputs, nr_hidden_units),
+            nn.Linear(num_inputs, hidden_units),
             nn.ReLU(),
-            nn.Linear(nr_hidden_units, nr_hidden_units),
+            nn.Linear(hidden_units, hidden_units),
             nn.ReLU(),
-            nn.Linear(nr_hidden_units, 1)
+            nn.Linear(hidden_units, 1)
         )
 
         self.actor = nn.Sequential(
-            nn.Linear(num_inputs, nr_hidden_units),
+            nn.Linear(num_inputs, hidden_units),
             nn.ReLU(),
-            nn.Linear(nr_hidden_units, nr_hidden_units),
+            nn.Linear(hidden_units, hidden_units),
             nn.ReLU(),
-            nn.Linear(nr_hidden_units, num_outputs),
+            nn.Linear(hidden_units, num_outputs),
         )
         # muesste einen Tensor mit Form (1, (env.action_space.shape[0])) erzeugen, jedes Element hat den Wert std
         self.log_std = nn.Parameter(torch.ones(1, num_outputs) * std)
@@ -123,9 +116,11 @@ class PPOLearner:
         self.nr_output_features = params["nr_output_features"]
         self.nr_input_features = params["nr_input_features"]
         self.minibatch_size = params["minibatch_size"]
+        self.hidden_units = params["hidden_units"]
         self.memory = ReplayMemory()
         self.alpha = params["alpha"]
-        self.ppo_net = PPONet(self.nr_input_features, self.nr_output_features).to(self.device)
+        self.beta = params["beta"]
+        self.ppo_net = PPONet(self.nr_input_features, self.nr_output_features, self.hidden_units).to(self.device)
         self.optimizer = torch.optim.Adam(self.ppo_net.parameters(), lr=self.alpha)
         self.ppo_epochs = params["ppo_epochs"]
         self.clip_param = params["clip"]
@@ -164,7 +159,7 @@ class PPOLearner:
                 actor_loss = - torch.min(surrogate1, surrogate2).mean()
                 critic_loss = (returns - values).pow(2).mean()
 
-                loss = 0.5 * critic_loss + actor_loss - 0.005 * entropy
+                loss = 0.5 * critic_loss + actor_loss - self.beta * entropy
 
                 self.optimizer.zero_grad()
                 loss.backward()

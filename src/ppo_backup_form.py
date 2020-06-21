@@ -13,6 +13,18 @@ from stable_baselines3.ppo.policies import MlpPolicy
 
 
 
+
+
+def get_environment(is_unity, worker_id = 0):
+    if is_unity:
+        unity_env = UnityEnvironment(file_name="../crawler_single/UnityEnvironment", worker_id=worker_id, seed=1, side_channels=[])
+        return UnityToGymWrapper(unity_env=unity_env)
+    else:
+        return gym.envs.make("MountainCarContinuous-v0")
+
+
+
+
 class ActorCritic(nn.Module):
     def __init__(self, num_inputs, num_outputs, hidden_size, std=0.0):
         print("number inputs: " + str(num_inputs) + " number outputs: " + str(num_outputs))
@@ -48,8 +60,6 @@ class ActorCritic(nn.Module):
 
 def plot(frame_idx, test_interval, rewards):
     frames = [x*test_interval for x in range(1, len(rewards)+1)]
-    print(frames)
-    print("frame: " + str(frame_idx) + "  len(rewards): " + str(len(rewards)))
     clear_output(True)
     plt.figure(figsize=(15, 5))
     plt.subplot(131)
@@ -57,6 +67,27 @@ def plot(frame_idx, test_interval, rewards):
     plt.plot(frames, rewards)
     plt.plot(frames, rewards, 'ob')
     plt.show()
+
+
+
+
+
+def test_env(model, env, device, vis=True):
+    state = env.reset()
+    if vis: env.render()
+    done = False
+    total_reward = 0
+    for _ in range(20):
+        while not done:
+            state = torch.FloatTensor(state).to(device)
+            dist, _ = model(state)
+            next_state, reward, done, _ = env.step(dist.sample().cpu().numpy())
+            state = next_state
+            if vis: env.render()
+            total_reward += reward
+    return total_reward / 10
+
+
 
 
 
@@ -109,32 +140,6 @@ def ppo_update(ppo_epochs, mini_batch_size, states, actions, log_probs, returns,
 
 
 
-def get_environment(is_unity, worker_id = 0):
-    if is_unity:
-        unity_env = UnityEnvironment(file_name="../crawler_single/UnityEnvironment", worker_id=worker_id, seed=1, side_channels=[])
-        return UnityToGymWrapper(unity_env=unity_env)
-    else:
-        return gym.envs.make("MountainCarContinuous-v0")
-
-
-
-def test_env(model, env, device, vis=True):
-    state = env.reset()
-    if vis: env.render()
-    done = False
-    total_reward = 0
-    for _ in range(20):
-        while not done:
-            state = torch.FloatTensor(state).to(device)
-            dist, _ = model(state)
-            next_state, reward, done, _ = env.step(dist.sample().cpu().numpy())
-            state = next_state
-            if vis: env.render()
-            total_reward += reward
-            # env.close()
-    return total_reward / 10
-
-
 
 
     # env = get_environment(is_unity=True)
@@ -143,21 +148,21 @@ def test_env(model, env, device, vis=True):
 
 
 
-def ppo(hidden_size, lr, num_steps, mini_batch_size, ppo_epochs, threshold_reward, entropy_beta, critic_loss_mp, test_interval, is_unity=False):
+def ppo(hidden_size, lr, num_steps, mini_batch_size, ppo_epochs, threshold_reward, entropy_beta, critic_loss_mp, test_interval, is_unity=False, max_eps_steps=4000):
 
 
     IS_UNITY = is_unity
     envs = get_environment(is_unity=IS_UNITY)
-    envs._max_episode_steps = 4000
+    envs._max_episode_steps = max_eps_steps
 
     use_cuda = torch.cuda.is_available()
     device = torch.device("cuda" if use_cuda else "cpu")
 
 
-    num_inputs = envs.observation_space.shape[0]
-    num_outputs = envs.action_space.shape[0]
+    observation_space_size = envs.observation_space.shape[0]
+    action_space_size = envs.action_space.shape[0]
 
-    net: ActorCritic = ActorCritic(num_inputs, num_outputs, hidden_size)
+    net: ActorCritic = ActorCritic(observation_space_size, action_space_size, hidden_size)
     model = net.to(device)
     optimizer = optim.Adam(model.parameters(), lr=lr)
 
@@ -219,7 +224,8 @@ def ppo(hidden_size, lr, num_steps, mini_batch_size, ppo_epochs, threshold_rewar
         print("update number: " + str(frame_idx / num_steps))
         print("")
         if frame_idx == 500000 or frame_idx == 750000 or frame_idx == 1000000 or frame_idx == 1500000:
-            torch.save(net.state_dict(), "model")
+            filename = str('checkpoint-steps{}.pth'.format(frame_idx))
+            torch.save(net.state_dict(), filename)
 
 
 
@@ -228,16 +234,17 @@ def ppo(hidden_size, lr, num_steps, mini_batch_size, ppo_epochs, threshold_rewar
 if __name__ == '__main__':
 
     # hyper parameters:                       CRAWLER         CAR
-    hidden_size      = 128              #      512      #    256
-    lr               = 3e-4             #      3e-4     #    3e-4
-    num_steps        = 1024              #      2048     #    2048
-    mini_batch_size  = 32               #      32       #    32
-    ppo_epochs       = 10                #      3        #    10
-    threshold_reward = 400              #      400      #    90
-    entropy_beta     = 0.002                                             # 0.01
+    hidden_size      = 128                #      512      #    32
+    lr               = 3e-3              #      3e-4     #    3e-3
+    num_steps        = 2048              #      2048     #    4096
+    mini_batch_size  = 32                #      32       #    32
+    ppo_epochs       = 3                 #      3        #    4
+    threshold_reward = 400               #      400      #    90
+    entropy_beta     = 0.05                                             # 0.01
     critic_loss_mp   = 0.5
-    test_interval   = 4000
+    test_interval   = 8000
+    max_episode_steps = 4000
 
     ppo(is_unity=True, hidden_size=hidden_size, lr=lr, num_steps=num_steps, mini_batch_size=mini_batch_size, ppo_epochs=ppo_epochs,
-        threshold_reward=threshold_reward, entropy_beta=entropy_beta, critic_loss_mp=critic_loss_mp, test_interval=test_interval)
+        threshold_reward=threshold_reward, entropy_beta=entropy_beta, critic_loss_mp=critic_loss_mp, test_interval=test_interval, max_eps_steps=max_episode_steps)
 
