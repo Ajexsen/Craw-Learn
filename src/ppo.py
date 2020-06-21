@@ -14,26 +14,60 @@ import os
 """
 class ReplayMemory:
 
-    def __init__(self, size):
-        self.transitions = []
-        self.size = size
+    def __init__(self):
+        self.log_probs = []
+        self.values = []
+        self.states = []
+        self.actions = []
+        self.rewards = []
+        self.dones = []
 
-    def save(self, transition):
-        self.transitions.append(transition)
-        if len(self.transitions) > self.size:
-            self.transitions.pop(0)
+    def save(self, log_prob, value, state, action, reward, done):
+        self.log_probs.append(log_prob)
+        self.values.append(value)
+        self.states.append(state)
+        self.actions.append(action)
+        self.rewards.append(reward)
+        self.dones.append(done)
 
-    def sample_batch(self, minibatch_size):
-        nr_episodes = len(self.transitions)
-        if nr_episodes > minibatch_size:
-            return random.sample(self.transitions, minibatch_size)
-        return self.transitions
+    def sample_batch(self, minibatch_size, next_value):
+        returns = torch.stack(self.compute_gae(next_value)).detach()
+        log_probs = torch.stack(self.log_probs).detach()
+        values = torch.stack(self.values).detach()
+        states = torch.stack(self.states)
+        actions = torch.stack(self.actions)
+        advantages = returns - values
+        batch_size = len(self.states)
+        ids = np.random.permutation(batch_size)
+        print(len(self.states))
+        print(len(self.log_probs))
+        print(len(self.values))
+        print(len(self.actions))
+        print(len(self.rewards))
+        print(len(self.dones))
+        ids = np.split(ids, batch_size // minibatch_size)
+
+        for i in range(len(ids)):
+            yield states[ids[i]], actions[ids[i]], log_probs[ids[i]], returns[ids[i]], advantages[ids[i]]
+
+    def compute_gae(self, next_value, gamma=0.99, tau=0.95):
+        values = self.values + [next_value]
+        gae = 0
+        returns = []
+        for step in reversed(range(len(self.rewards))):
+            delta = self.rewards[step] + gamma * values[step + 1] * (1-self.dones[step]) - values[step]
+            gae = delta + gamma * tau * (1-self.dones[step]) * gae
+            returns.insert(0, gae + values[step])
+        return returns
 
     def clear(self):
-        self.transitions.clear()
+        self.log_probs.clear()
+        self.values.clear()
+        self.states.clear()
+        self.actions.clear()
+        self.rewards.clear()
+        self.dones.clear()
 
-    def size(self):
-        return len(self.transitions)
 
 
 class PPONet(nn.Module):
@@ -69,10 +103,10 @@ class PPONet(nn.Module):
         self.log_std = nn.Parameter(torch.ones(1, num_outputs) * std)
 
 
-    def forward(self, x):
-        value = self.critic(x)
+    def forward(self, state):
+        value = self.critic(state)
 
-        mu = self.actor(x)
+        mu = self.actor(state)
 
         # was ist std?(normalverteilung scheint lange her zu sein...) expand_as bringt mu in dieselbe Form wie self.log_std
         # TODO was macht das hier genau?
@@ -89,7 +123,7 @@ class PPOLearner:
         self.nr_output_features = params["nr_output_features"]
         self.nr_input_features = params["nr_input_features"]
         self.minibatch_size = params["minibatch_size"]
-        self.memory = ReplayMemory(params["memory_capacity"])
+        self.memory = ReplayMemory()
         self.alpha = params["alpha"]
         self.ppo_net = PPONet(self.nr_input_features, self.nr_output_features).to(self.device)
         self.optimizer = torch.optim.Adam(self.ppo_net.parameters(), lr=self.alpha)
@@ -100,38 +134,40 @@ class PPOLearner:
     def policy(self, state):
         #states = torch.tensor([state], device=self.device, dtype=torch.float)
         #action_dist, _ = self.ppo_net.critic(states)
-        action_dist, _ = self.predict(state)
+        action_dist, value = self.predict(state)
         action = action_dist.sample().cpu()
         log_prob = action_dist.log_prob(action)
-        return action, log_prob
+        return action, log_prob, value
 
-    def predict(self, states):
-        states = torch.FloatTensor(states).unsqueeze(0).to(self.device).detach()
-        return self.ppo_net.forward(states)
+    def predict(self, state):
+        state = torch.FloatTensor(state).unsqueeze(0).to(self.device).detach()
+        return self.ppo_net.forward(state)
 
-    def update(self):
+    def update(self, next_state):
+        _, next_value = self.predict(next_state)
 
         for _ in range(self.ppo_epochs):
 
-            minibatch = self.memory.sample_batch(self.minibatch_size)
-            states, actions, log_probs, rewards, next_states, dones = tuple(zip(*minibatch))
+            #minibatch = self.memory.sample_batch(self.minibatch_size)
+           # states, actions, log_probs, rewards, next_states, dones = tuple(zip(*minibatch))
+
             # for state, action, old_log_probs, return_, advantage in tuple(zip(*minibatch)):
-            for state, action, old_log_probs, reward, next_state, done in zip(states, actions, log_probs, rewards, next_states, dones):
-                dist, value = self.predict(state)
-                advantage = reward - value
-                entropy = dist.entropy().mean()
-                new_log_probs = dist.log_prob(action)
+            for states, actions, old_log_probs, returns, advantages in self.memory.sample_batch(self.minibatch_size, next_value):
+                dists, values = self.ppo_net(states)
+                entropy = dists.entropy().mean()
+                new_log_probs = dists.log_prob(actions)
 
-                ratio = (new_log_probs - old_log_probs).exp()
-                surr1 = ratio * advantage
-                surr2 = torch.clamp(ratio, 1.0 - self.clip_param, 1.0 + self.clip_param) * advantage
+                ratios = (new_log_probs - old_log_probs).exp()
+                surrogate1 = ratios * advantages
+                surrogate2 = torch.clamp(ratios, 1.0 - self.clip_param, 1.0 + self.clip_param) * advantages
 
-                actor_loss = - torch.min(surr1, surr2).mean()
-                # woher kommt die 2?
-                critic_loss = (reward - value).pow(2).mean()
+                actor_loss = - torch.min(surrogate1, surrogate2).mean()
+                critic_loss = (returns - values).pow(2).mean()
 
-                loss = 0.5 * critic_loss + actor_loss - 0.01 * entropy
+                loss = 0.5 * critic_loss + actor_loss - 0.005 * entropy
 
                 self.optimizer.zero_grad()
                 loss.backward()
                 self.optimizer.step()
+
+        self.memory.clear()
