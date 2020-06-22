@@ -1,5 +1,9 @@
 import matplotlib.pyplot as plot
+import numpy as np
 import torchvision
+import torchvision.transforms as transforms
+import torch.nn as nn
+import torch.nn.functional as F
 from torch import optim, device
 from torch.utils.tensorboard import SummaryWriter
 import torch
@@ -30,6 +34,8 @@ def episode(env, agent, nr_episode=0):
         log_prob = log_prob.detach()
         state = torch.FloatTensor(state).unsqueeze(0).to(torch.device("cpu")).detach()
         agent.memory.save(log_prob, value, state, action, reward, done)
+        writer.add_scalar('logprob', log_prob, time_step)
+        writer.add_scalar('reward', reward, time_step)
 
         if time_step % 4096 == 0 and time_step != 0:
             agent.update(next_state)
@@ -38,6 +44,7 @@ def episode(env, agent, nr_episode=0):
         undiscounted_return += reward
         time_step += 1
     print(nr_episode, ":", undiscounted_return)
+    writer.add_scalar('undiscounted_return', undiscounted_return, nr_episode)
     torch.save(agent.ppo_net, "PPONet_190620_crawler.pt")
     return undiscounted_return
 
@@ -75,6 +82,8 @@ params["clip"] = 0.2
 # Agent setup
 time_step = 1
 agent = a.PPOLearner(params)
+writer = SummaryWriter()
+
 returns = [episode(env, agent, i) for i in range(training_episodes)]
 
 torch.save(agent.ppo_net, "PPONet_190620")
@@ -87,3 +96,5 @@ plot.title("Progress")
 plot.xlabel("episode")
 plot.ylabel("undiscounted return")
 plot.show()
+
+writer.close()
