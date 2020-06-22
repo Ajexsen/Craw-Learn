@@ -14,7 +14,9 @@ import os
 """
 class ReplayMemory:
 
-    def __init__(self):
+    def __init__(self, gamma, tau):
+        self.gamma = gamma
+        self.tau = tau
         self.log_probs = []
         self.values = []
         self.states = []
@@ -44,13 +46,13 @@ class ReplayMemory:
         for i in range(len(ids)):
             yield states[ids[i]], actions[ids[i]], log_probs[ids[i]], returns[ids[i]], advantages[ids[i]]
 
-    def compute_gae(self, next_value, gamma=0.99, tau=0.95):
+    def compute_gae(self, next_value):
         values = self.values + [next_value]
         gae = 0
         returns = []
         for step in reversed(range(len(self.rewards))):
-            delta = self.rewards[step] + gamma * values[step + 1] * (1-self.dones[step]) - values[step]
-            gae = delta + gamma * tau * (1-self.dones[step]) * gae
+            delta = self.rewards[step] + self.gamma * values[step + 1] * (1-self.dones[step]) - values[step]
+            gae = delta + self.gamma * self.tau * (1-self.dones[step]) * gae
             returns.insert(0, gae + values[step])
         return returns
 
@@ -103,15 +105,18 @@ class PPONet(nn.Module):
 
 class PPOLearner:
 
-    def __init__(self, params):
+    def __init__(self, params, writer):
         self.device = torch.device("cpu")
+        self.writer = writer
         self.nr_output_features = params["nr_output_features"]
         self.nr_input_features = params["nr_input_features"]
         self.minibatch_size = params["minibatch_size"]
         self.hidden_units = params["hidden_units"]
-        self.memory = ReplayMemory()
         self.alpha = params["alpha"]
         self.beta = params["beta"]
+        self.gamma = params["gamma"]
+        self.tau = params["tau"]
+        self.memory = ReplayMemory(self.gamma, self.tau)
         self.ppo_net = PPONet(self.nr_input_features, self.nr_output_features, self.hidden_units).to(self.device)
         self.optimizer = torch.optim.Adam(self.ppo_net.parameters(), lr=self.alpha)
         self.ppo_epochs = params["ppo_epochs"]
@@ -145,6 +150,8 @@ class PPOLearner:
                 critic_loss = (returns - values).pow(2).mean()
 
                 loss = 0.5 * critic_loss + actor_loss - self.beta * entropy
+                self.writer.add_scalar('loss', loss)
+                self.writer.add_scalar('entropy', entropy / loss)
 
                 self.optimizer.zero_grad()
                 loss.backward()

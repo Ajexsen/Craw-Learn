@@ -30,8 +30,8 @@ def episode(env, agent, nr_episode=0):
         log_prob = log_prob.detach()
         state = torch.FloatTensor(state).unsqueeze(0).to(torch.device("cpu")).detach()
         agent.memory.save(log_prob, value, state, action, reward, done)
-        writer.add_scalar('logprob', log_prob, time_step)
-        writer.add_scalar('reward', reward, time_step)
+        # writer.add_scalar('logprob', log_prob, time_step)
+        # writer.add_scalar('reward', reward, time_step)
 
         if time_step % params.update_time_steps == 0 and time_step != 0:
             agent.update(next_state)
@@ -48,11 +48,13 @@ def episode(env, agent, nr_episode=0):
 # Domain setup
 # window_path = "../crawler_single/UnityEnvironment"
 # linux_path = "crawler_single/linux/static/"
-# unity_env = UnityEnvironment(file_name=linux_path, seed=1, side_channels=[])
-# env = UnityToGymWrapper(unity_env=unity_env)
-env = gym.make('MountainCarContinuous-v0')
-env._max_episode_steps = 1500 # (default)
+unity_env = UnityEnvironment(file_name=linux_path, seed=1, side_channels=[])
+env = UnityToGymWrapper(unity_env=unity_env)
+
 # setup other continuous environment to check for bugs
+#env = gym.make('MountainCarContinuous-v0')
+
+env._max_episode_steps = 1500 # (default)
 
 params = {}
 
@@ -62,18 +64,16 @@ params["env"] = env
 
 # Hyperparameters
 # min. two layer
+training_episodes = 10000
 
 # greater than 4096
 params["update_time_steps"] = 4096
 
-# hidden_units: 2^x, bigger as input
-params["hidden_units"] = 32
+# hidden_units: 2^x, bigger as input [256, 512]
+params["hidden_units"] = 512
 
 # [32, 64]
 params["minibatch_size"] = 32
-
-#params["gamma"] = 0.99
-
 
 # learning rate = alpha (default?)
 params["alpha"] = 3e-3
@@ -81,8 +81,8 @@ params["alpha"] = 3e-3
 # depending on loss?
 params["beta"] = 0.005
 
-#
-training_episodes = 20000
+params["gamma"] = 0.99
+params["tau"] = 0.95
 
 # tune -> is 1 worst than 4? -> [1,4,8,...]
 params["ppo_epochs"] = 4
@@ -92,15 +92,11 @@ params["clip"] = 0.2
 
 
 # Agent setup
-time_step = 1
-agent = a.PPOLearner(params)
 writer = SummaryWriter()
+time_step = 1
+agent = a.PPOLearner(params, writer)
 
 returns = [episode(env, agent, i) for i in range(training_episodes)]
 writer.close()
 
 torch.save(agent.ppo_net, "PPONet_190620")
-
-x = range(training_episodes)
-y = returns
-
