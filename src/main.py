@@ -95,9 +95,9 @@ params["clip"] = 0.2
 time_step = 1
 agent = a.PPOLearner(params)
 writer = SummaryWriter()
-writer.close()
 
 returns = [episode(env, agent, i) for i in range(training_episodes)]
+writer.close()
 
 torch.save(agent.ppo_net, "PPONet_190620")
 
