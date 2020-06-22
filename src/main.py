@@ -33,7 +33,7 @@ def episode(env, agent, nr_episode=0):
         # writer.add_scalar('logprob', log_prob, time_step)
         # writer.add_scalar('reward', reward, time_step)
 
-        if time_step % params.update_time_steps == 0 and time_step != 0:
+        if time_step % params["update_time_steps"] == 0 and time_step != 0:
             agent.update(next_state)
 
         state = next_state
@@ -47,12 +47,12 @@ def episode(env, agent, nr_episode=0):
 
 # Domain setup
 # window_path = "../crawler_single/UnityEnvironment"
-# linux_path = "crawler_single/linux/static/"
-unity_env = UnityEnvironment(file_name=linux_path, seed=1, side_channels=[])
-env = UnityToGymWrapper(unity_env=unity_env)
+# linux_path = "crawler_single/linux/dynamic/"
+#unity_env = UnityEnvironment(file_name=linux_path, seed=1, side_channels=[])
+#env = UnityToGymWrapper(unity_env=unity_env)
 
 # setup other continuous environment to check for bugs
-#env = gym.make('MountainCarContinuous-v0')
+env = gym.make('MountainCarContinuous-v0')
 
 env._max_episode_steps = 1500 # (default)
 
