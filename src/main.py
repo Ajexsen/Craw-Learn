@@ -1,10 +1,3 @@
-import matplotlib.pyplot as plot
-import numpy as np
-import torchvision
-import torchvision.transforms as transforms
-import torch.nn as nn
-import torch.nn.functional as F
-from torch import optim, device
 from torch.utils.tensorboard import SummaryWriter
 import torch
 import gym
@@ -40,16 +33,15 @@ def episode(env, agent, nr_episode=0):
         writer.add_scalar('logprob', log_prob, time_step)
         writer.add_scalar('reward', reward, time_step)
 
-        # > 4096 -> hyperparameter
-        if time_step % 4096 == 0 and time_step != 0:
+        if time_step % params.update_time_steps == 0 and time_step != 0:
             agent.update(next_state)
 
         state = next_state
         undiscounted_return += reward
         time_step += 1
-    print(nr_episode, ":", undiscounted_return)
+    print(nr_episode, ":", undiscounted_return, "-", env._elapsed_steps, "steps")
     writer.add_scalar('undiscounted_return', undiscounted_return, nr_episode)
-    torch.save(agent.ppo_net, "PPONet_190620_crawler.pt")
+    # torch.save(agent.ppo_net, "PPONet_190620_crawler.pt")
     return undiscounted_return
 
 
@@ -70,6 +62,9 @@ params["env"] = env
 
 # Hyperparameters
 # min. two layer
+
+# greater than 4096
+params["update_time_steps"] = 4096
 
 # hidden_units: 2^x, bigger as input
 params["hidden_units"] = 32
@@ -95,16 +90,12 @@ params["ppo_epochs"] = 4
 # not tune (default)
 params["clip"] = 0.2
 
-#model = a.PPONet(params.nr_input_features, params.nr_output_features, params.hidden_units).to(device)
-#optimizer = optim.Adam(model.parameters())
-# welcher Optimizer?
-# welche dazugeho
-# erigen Parameter?
 
 # Agent setup
 time_step = 1
 agent = a.PPOLearner(params)
 writer = SummaryWriter()
+writer.close()
 
 returns = [episode(env, agent, i) for i in range(training_episodes)]
 
@@ -113,10 +104,3 @@ torch.save(agent.ppo_net, "PPONet_190620")
 x = range(training_episodes)
 y = returns
 
-plot.plot(x, y)
-plot.title("Progress")
-plot.xlabel("episode")
-plot.ylabel("undiscounted return")
-plot.show()
-
-writer.close()

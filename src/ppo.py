@@ -63,15 +63,7 @@ class ReplayMemory:
         self.dones.clear()
 
 
-
 class PPONet(nn.Module):
-
-
-    #######################
-    # nur fuers Verstaendnis:
-    # num_inputs  = envs.observation_space.shape[0]
-    # num_outputs = envs.action_space.shape[0]
-    ######################
 
     def __init__(self, num_inputs, num_outputs, hidden_units, std=0.0):
         super(PPONet, self).__init__()
@@ -95,7 +87,6 @@ class PPONet(nn.Module):
         # muesste einen Tensor mit Form (1, (env.action_space.shape[0])) erzeugen, jedes Element hat den Wert std
         self.log_std = nn.Parameter(torch.ones(1, num_outputs) * std)
 
-
     def forward(self, state):
         value = self.critic(state)
 
@@ -108,6 +99,7 @@ class PPONet(nn.Module):
         # erzeugt eine Normalverteilung mit den Erwartungswerten der ausgewaehlten Aktion und der Standardabweichung std
         dist = Normal(mu, std)
         return dist, value
+
 
 class PPOLearner:
 
@@ -125,10 +117,7 @@ class PPOLearner:
         self.ppo_epochs = params["ppo_epochs"]
         self.clip_param = params["clip"]
 
-
     def policy(self, state):
-        #states = torch.tensor([state], device=self.device, dtype=torch.float)
-        #action_dist, _ = self.ppo_net.critic(states)
         action_dist, value = self.predict(state)
         action = action_dist.sample().cpu()
         log_prob = action_dist.log_prob(action)
@@ -143,10 +132,6 @@ class PPOLearner:
 
         for _ in range(self.ppo_epochs):
 
-            #minibatch = self.memory.sample_batch(self.minibatch_size)
-           # states, actions, log_probs, rewards, next_states, dones = tuple(zip(*minibatch))
-
-            # for state, action, old_log_probs, return_, advantage in tuple(zip(*minibatch)):
             for states, actions, old_log_probs, returns, advantages in self.memory.sample_batch(self.minibatch_size, next_value):
                 dists, values = self.ppo_net(states)
                 entropy = dists.entropy().mean()
