@@ -52,7 +52,7 @@ def episode(env, agent, nr_episode=0):
 
 # Domain setup
 # window_path = "../crawler_single/UnityEnvironment"
-linux_path = "../crawler_single/linux/dynamic/crawlerDynamic.x86_64"
+linux_path = "../crawler_single/linux/dynamic_server/crawler_dynamic.x86_64"
 unity_env = UnityEnvironment(file_name=linux_path, seed=1, side_channels=[])
 env = UnityToGymWrapper(unity_env=unity_env)
 
