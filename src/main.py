@@ -1,6 +1,8 @@
 from torch.utils.tensorboard import SummaryWriter
 import torch
 import gym
+import time
+import os
 
 import src.ppo as a
 from gym_unity.envs import UnityToGymWrapper
@@ -39,20 +41,23 @@ def episode(env, agent, nr_episode=0):
         state = next_state
         undiscounted_return += reward
         time_step += 1
-    print(nr_episode, ":", undiscounted_return, "-", env._elapsed_steps, "steps")
+    print(nr_episode, ":", undiscounted_return)
     writer.add_scalar('undiscounted_return', undiscounted_return, nr_episode)
-    # torch.save(agent.ppo_net, "PPONet_190620_crawler.pt")
+
+#    if not os.isdir("../Net_Crawler"):
+#        os.mkdir("../Net_Crawler")
+    torch.save(agent.ppo_net, "../Net_Crawler/PPONet_crawler" + time.strftime("%y%m%d_%H") + ".pt")
     return undiscounted_return
 
 
 # Domain setup
 # window_path = "../crawler_single/UnityEnvironment"
-# linux_path = "crawler_single/linux/dynamic/"
-#unity_env = UnityEnvironment(file_name=linux_path, seed=1, side_channels=[])
-#env = UnityToGymWrapper(unity_env=unity_env)
+linux_path = "../crawler_single/linux/dynamic/crawlerDynamic.x86_64"
+unity_env = UnityEnvironment(file_name=linux_path, seed=1, side_channels=[])
+env = UnityToGymWrapper(unity_env=unity_env)
 
 # setup other continuous environment to check for bugs
-env = gym.make('MountainCarContinuous-v0')
+#env = gym.make('MountainCarContinuous-v0')
 
 env._max_episode_steps = 1500 # (default)
 
