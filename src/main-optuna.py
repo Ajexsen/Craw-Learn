@@ -8,7 +8,7 @@ from mlagents_envs.environment import UnityEnvironment
 
 import optuna
 
-time_step = 1
+time_step = 0
 
 def episode(env, agent, params, writer, nr_episode=0):
     global time_step
@@ -32,7 +32,12 @@ def episode(env, agent, params, writer, nr_episode=0):
         action = action.detach()
         log_prob = log_prob.detach()
         state = torch.FloatTensor(state).unsqueeze(0).to(torch.device("cpu")).detach()
+
         agent.memory.save(log_prob, value, state, action, reward, done)
+        time_step += 1
+
+        if len(agent.memory.states) != time_step:
+            print("------ # states:",len(agent.memory.states), ", time_step\t", time_step)
         # writer.add_scalar('logprob', log_prob, time_step)
         # writer.add_scalar('reward', reward, time_step)
 
@@ -41,8 +46,7 @@ def episode(env, agent, params, writer, nr_episode=0):
 
         state = next_state
         undiscounted_return += reward
-        time_step += 1
-    print(nr_episode, ":", undiscounted_return)
+    print(time.strftime("%Y-%m-%d %H:%m:%S "), nr_episode, ":\t", undiscounted_return)
     writer.add_scalar('undiscounted_return', undiscounted_return, nr_episode)
 
     #    if not os.isdir("../Net_Crawler"):
@@ -94,7 +98,9 @@ if __name__ == '__main__':
     db = 'sqlite:///example.db'
     try:
         study = optuna.load_study(study_name=name, storage=db)
+        print("------- load study successful")
     except:
         optuna.create_study(storage=db, study_name=name)
         study = optuna.load_study(study_name=name, storage=db)
+        print("******* create and load study successful")
     study.optimize(objective, n_trials=100)
