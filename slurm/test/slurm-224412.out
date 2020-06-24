@@ -1,0 +1,3 @@
+slurmstepd-mauch: error: Unable to create TMPDIR [/tmp/user/30108]: Permission denied
+slurmstepd-mauch: error: Setting TMPDIR to /tmp
+slurmstepd-mauch: error: *** JOB 224412 ON mauch CANCELLED AT 2020-06-22T16:01:05 ***
