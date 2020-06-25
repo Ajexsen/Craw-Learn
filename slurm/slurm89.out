@@ -1,0 +1,514 @@
+slurmstepd-ilm: error: Unable to create TMPDIR [/tmp/user/30108]: Permission denied
+slurmstepd-ilm: error: Setting TMPDIR to /tmp
+Found path: /home/j/jensenj/PycharmProjects/Federer-Jr./src/../crawler_single/linux/dynamic_server/crawler_dynamic.x86_64
+Mono path[0] = '/home/j/jensenj/PycharmProjects/Federer-Jr./src/../crawler_single/linux/dynamic_server/crawler_dynamic_Data/Managed'
+Mono config path = '/home/j/jensenj/PycharmProjects/Federer-Jr./src/../crawler_single/linux/dynamic_server/crawler_dynamic_Data/MonoBleedingEdge/etc'
+Preloaded 'lib_burst_generated.so'
+Preloaded 'libgrpc_csharp_ext.x64.so'
+Initialize engine version: 2019.3.15f1 (59ff3e03856d)
+[Subsystems] Discovering subsystems at path /home/j/jensenj/PycharmProjects/Federer-Jr./src/../crawler_single/linux/dynamic_server/crawler_dynamic_Data/UnitySubsystems
+Forcing GfxDevice: Null
+GfxDevice: creating device client; threaded=0
+NullGfxDevice:
+    Version:  NULL 1.0 [1.0]
+    Renderer: Null Device
+    Vendor:   Unity Technologies
+Begin MonoManager ReloadAssembly
+- Completed reload, in  0.099 seconds
+WARNING: Shader Unsupported: 'Autodesk Interactive' - All passes removed
+WARNING: Shader Did you use #pragma only_renderers and omit this platform?
+UnloadTime: 0.438993 ms
+Fallback handler could not load library /home/j/jensenj/PycharmProjects/Federer-Jr./src/../crawler_single/linux/dynamic_server/crawler_dynamic_Data/Mono/libcoreclr.so
+Fallback handler could not load library /home/j/jensenj/PycharmProjects/Federer-Jr./src/../crawler_single/linux/dynamic_server/crawler_dynamic_Data/Mono/libcoreclr.so
+Fallback handler could not load library /home/j/jensenj/PycharmProjects/Federer-Jr./src/../crawler_single/linux/dynamic_server/crawler_dynamic_Data/Mono/libcoreclr.so
+Fallback handler could not load library /home/j/jensenj/PycharmProjects/Federer-Jr./src/../crawler_single/linux/dynamic_server/crawler_dynamic_Data/Mono/libSystem.dylib
+Fallback handler could not load library /home/j/jensenj/PycharmProjects/Federer-Jr./src/../crawler_single/linux/dynamic_server/crawler_dynamic_Data/Mono/libSystem.dylib.so
+Fallback handler could not load library /home/j/jensenj/PycharmProjects/Federer-Jr./src/../crawler_single/linux/dynamic_server/crawler_dynamic_Data/Mono/libSystem.dylib
+Fallback handler could not load library /home/j/jensenj/PycharmProjects/Federer-Jr./src/../crawler_single/linux/dynamic_server/crawler_dynamic_Data/Mono/libcoreclr.so
+Fallback handler could not load library /home/j/jensenj/PycharmProjects/Federer-Jr./src/../crawler_single/linux/dynamic_server/crawler_dynamic_Data/Mono/libcoreclr.so
+Fallback handler could not load library /home/j/jensenj/PycharmProjects/Federer-Jr./src/../crawler_single/linux/dynamic_server/crawler_dynamic_Data/Mono/libcoreclr.so
+Fallback handler could not load library /home/j/jensenj/PycharmProjects/Federer-Jr./src/../crawler_single/linux/dynamic_server/crawler_dynamic_Data/Mono/libSystem.dylib
+Fallback handler could not load library /home/j/jensenj/PycharmProjects/Federer-Jr./src/../crawler_single/linux/dynamic_server/crawler_dynamic_Data/Mono/libSystem.dylib.so
+Fallback handler could not load library /home/j/jensenj/PycharmProjects/Federer-Jr./src/../crawler_single/linux/dynamic_server/crawler_dynamic_Data/Mono/libSystem.dylib
+/home/j/jensenj/.local/lib/python3.6/site-packages/tensorboard/compat/tensorflow_stub/dtypes.py:541: FutureWarning: Passing (type, 1) or '1type' as a synonym of type is deprecated; in a future version of numpy, it will be understood as (type, (1,)) / '(1,)type'.
+  _np_qint8 = np.dtype([("qint8", np.int8, 1)])
+/home/j/jensenj/.local/lib/python3.6/site-packages/tensorboard/compat/tensorflow_stub/dtypes.py:542: FutureWarning: Passing (type, 1) or '1type' as a synonym of type is deprecated; in a future version of numpy, it will be understood as (type, (1,)) / '(1,)type'.
+  _np_quint8 = np.dtype([("quint8", np.uint8, 1)])
+/home/j/jensenj/.local/lib/python3.6/site-packages/tensorboard/compat/tensorflow_stub/dtypes.py:543: FutureWarning: Passing (type, 1) or '1type' as a synonym of type is deprecated; in a future version of numpy, it will be understood as (type, (1,)) / '(1,)type'.
+  _np_qint16 = np.dtype([("qint16", np.int16, 1)])
+/home/j/jensenj/.local/lib/python3.6/site-packages/tensorboard/compat/tensorflow_stub/dtypes.py:544: FutureWarning: Passing (type, 1) or '1type' as a synonym of type is deprecated; in a future version of numpy, it will be understood as (type, (1,)) / '(1,)type'.
+  _np_quint16 = np.dtype([("quint16", np.uint16, 1)])
+/home/j/jensenj/.local/lib/python3.6/site-packages/tensorboard/compat/tensorflow_stub/dtypes.py:545: FutureWarning: Passing (type, 1) or '1type' as a synonym of type is deprecated; in a future version of numpy, it will be understood as (type, (1,)) / '(1,)type'.
+  _np_qint32 = np.dtype([("qint32", np.int32, 1)])
+/home/j/jensenj/.local/lib/python3.6/site-packages/tensorboard/compat/tensorflow_stub/dtypes.py:550: FutureWarning: Passing (type, 1) or '1type' as a synonym of type is deprecated; in a future version of numpy, it will be understood as (type, (1,)) / '(1,)type'.
+  np_resource = np.dtype([("resource", np.ubyte, 1)])
+2020-06-25 12:13:51 INFO [environment.py:108] Connected to Unity environment with package version 1.0.2 and communication version 1.0.0
+2020-06-25 12:13:51 INFO [environment.py:265] Connected new brain:
+CrawlerDynamic?team=0
+2020-06-25 12:13:51 WARNING [__init__.py:92] The environment contains multiple observations. You must define allow_multiple_obs=True to receive them all. Otherwise, only the first visual observation (or vector observation ifthere are no visual observations) will be provided in the observation.
+Internal: JobTempAlloc has allocations that are more than 4 frames old - this is not allowed and likely a leak 
+(Filename:  Line: 554)
+
+/home/j/jensenj/.local/lib/python3.6/site-packages/gym/logger.py:30: UserWarning: [33mWARN: Box bound precision lowered by casting to float32[0m
+  warnings.warn(colorize('%s: %s'%('WARN', msg % args), 'yellow'))
+update_time_steps: 8192 , ppo_epochs: 4 , beta:  0.1 , gamma 0.9
+0 : -1.707232613582164
+1 : -0.2463629045523703
+2 : -1.3971927966922522
+3 : -1.3987578749656677
+4 : -7.901990631129593
+5 : -2.4200149858370423
+6 : -4.312921525910497
+7 : -1.7468012049794197
+8 : 1.7871545874513686
+9 : -1.4838477498851717
+10 : -1.3592996820807457
+11 : -1.3128031862434
+12 : -1.1784941563382745
+13 : -1.0920504117384553
+14 : -1.0877644084393978
+15 : -1.4028471717610955
+16 : -0.9696701811626554
+17 : 0.3237951734336093
+18 : -1.2879148926585913
+19 : -1.1186711643822491
+20 : -1.7339676052797586
+21 : -1.3652840768918395
+22 : -1.1113008609972894
+23 : -4.083522411994636
+24 : -3.3363929057959467
+25 : -6.261962874792516
+26 : -0.7198996488004923
+27 : -0.3898546467535198
+28 : -2.069295713212341
+29 : 0.29287463426589966
+30 : -1.3807371696457267
+31 : -1.3402907364070415
+32 : -1.347089588176459
+33 : -1.520770818926394
+34 : -1.7134103598073125
+35 : 2.7725267722271383
+36 : -1.6829554573632777
+37 : -1.5647626887075603
+38 : -1.0126689169555902
+39 : -0.9224074902012944
+40 : -2.437555101700127
+41 : -1.3899312783032656
+42 : -3.945357878692448
+43 : 3.188959469087422
+44 : -0.537541329395026
+45 : -1.1413190928287804
+46 : -1.048749356297776
+47 : -1.308704735711217
+48 : -1.5274937259964645
+49 : -2.1542542409151793
+50 : -1.0758902453817427
+51 : 0.7785294465720654
+52 : -1.5771915633231401
+53 : -2.209099128842354
+54 : -1.2123400829732418
+55 : -1.8070831606164575
+56 : -1.5611293744295835
+57 : 0.17723985388875008
+58 : -1.1587753095664084
+59 : -0.9088049198035151
+60 : 0.8406878486275673
+61 : -1.5785695752128959
+62 : -0.4137612469494343
+63 : -0.7180701261386275
+64 : 0.5892586514819413
+65 : -2.7323743905872107
+66 : -1.5642186673358083
+67 : -1.5970202777534723
+68 : -3.4696095320396125
+69 : -0.9406503895297647
+70 : -4.299935014452785
+71 : -1.0648278212174773
+72 : -1.4892018307000399
+73 : -1.456364264478907
+74 : -8.506717746611685
+75 : -1.3696716299746186
+76 : -1.76655282266438
+77 : 0.08156161569058895
+78 : 2.372484869323671
+79 : 1.6619405546225607
+80 : -1.6393416803330183
+81 : -7.217835426330566
+82 : -3.3866163031198084
+83 : -0.7734243795275688
+84 : -0.9650906310416758
+85 : -0.7054585013538599
+86 : -0.7386104110628366
+87 : 0.39992808550596237
+88 : -1.3324586651287973
+89 : -0.8537512025795877
+90 : -1.3454710152000189
+91 : -0.4245986775495112
+92 : -0.30313301645219326
+93 : -1.796216458082199
+94 : -1.1606681821867824
+95 : -2.894631300121546
+96 : -1.0847901441156864
+97 : -1.8286694972775877
+98 : -1.5484407804906368
+99 : -1.2908160146325827
+100 : -2.4218579921871424
+101 : 1.299175638705492
+102 : -2.002305450849235
+103 : -0.8859026655554771
+104 : 0.16896927915513515
+105 : -1.388586160261184
+106 : -1.9133376518730074
+107 : -1.569361774250865
+108 : -2.7462876131758094
+109 : -1.689536290243268
+110 : -1.4137732088565826
+111 : -0.0395338898524642
+112 : -1.2966573107987642
+113 : -1.5346044229809195
+114 : -0.9646988501772285
+115 : -5.839637759607285
+116 : -0.312808558344841
+117 : -1.617786817252636
+118 : -4.802054394967854
+119 : 0.6185406995937228
+120 : -0.9487635961268097
+121 : -1.6165804229676723
+122 : -1.4641413167119026
+123 : 4.121996155939996
+124 : -1.7265545781701803
+125 : -1.224698355421424
+126 : -1.9050696454942226
+127 : -1.7424149233847857
+128 : 0.9125285097397864
+129 : -1.582865440286696
+130 : -1.3511495110578835
+131 : -0.5573839638382196
+132 : -1.7878267541527748
+133 : -1.2354788267984986
+134 : -2.0143827898427844
+135 : 1.0446311216801405
+136 : -0.9830632423982024
+137 : -1.1390091804787517
+138 : -1.2334967590868473
+139 : -1.5736743472516537
+140 : -1.564658968243748
+141 : -1.5270054982975125
+142 : -1.2726739766076207
+143 : -0.9144569542258978
+144 : -1.1563117299228907
+145 : -2.8311482248827815
+146 : -1.0417501460760832
+147 : -2.190742853563279
+148 : -1.7153929620981216
+149 : -1.0825240537524223
+150 : 3.9553702417761087
+151 : -1.5270087327808142
+152 : -0.6447202926501632
+153 : -0.8904147781431675
+154 : -0.6639891397207975
+155 : -1.3497461387887597
+156 : -0.443485751748085
+157 : -0.5279857125133276
+158 : 1.959093819372356
+159 : 1.0961576210102066
+160 : 1.2826211247593164
+161 : -2.1146792881190777
+162 : -1.5909508098848164
+163 : -1.0535036488436162
+164 : -3.763828028924763
+165 : -4.166250225156546
+166 : -2.080369807779789
+167 : 3.6420701257884502
+168 : -2.3643821151927114
+169 : -0.47639193618670106
+170 : -1.0264363018795848
+171 : -1.7546068858355284
+172 : -1.2598774507641792
+173 : -4.753208191599697
+174 : -1.2413319563493133
+175 : -1.6957214660942554
+176 : 4.969202951528132
+177 : -1.5472664617700502
+178 : -0.682651134673506
+179 : -1.0189823741093278
+180 : -0.4257793389260769
+181 : -0.8558021439239383
+182 : -1.30097017576918
+183 : -2.491132203489542
+184 : -1.0221558017656207
+185 : -5.042003923561424
+186 : -1.7550921216607094
+187 : -1.861898709088564
+188 : -1.7242974415421486
+189 : -1.866392005002126
+190 : -1.8064244873821735
+191 : -2.7062930415850133
+192 : -0.9985802248120308
+193 : -1.0282484972849488
+194 : -1.4246876798570156
+195 : -1.9657185138203204
+196 : -1.2505902713164687
+197 : -1.287984501104802
+198 : -0.5595887755043805
+199 : 2.9087054083356634
+200 : -1.372820895165205
+201 : -0.7318939296528697
+202 : -0.9957556556910276
+203 : -0.7691078088246286
+204 : -0.8856532571371645
+205 : -0.25414508720859885
+206 : -1.0009555448777974
+207 : -1.461331281810999
+208 : 1.7720208410173655
+209 : -1.5626404220238328
+210 : -2.8884098543785512
+211 : -2.0715579679235816
+212 : -2.850272892508656
+213 : -2.4292784477584064
+214 : -3.0977091346867383
+215 : -0.0848832530900836
+216 : -1.5026380261406302
+217 : -1.100017693825066
+218 : -1.0615155776031315
+219 : -0.32408547843806446
+220 : -0.8853928446769714
+221 : 0.7407126631587744
+222 : -1.1646911296993494
+223 : -1.198313681408763
+224 : -0.1845017373561859
+225 : -4.316011443268508
+226 : 0.14377953903749585
+227 : -1.5509904802311212
+228 : -5.2406594324857
+229 : -6.529607417061925
+230 : -3.726951434276998
+231 : -2.1185614056885242
+232 : -1.4725123792886734
+233 : -1.7817961787804961
+234 : -1.3067518156021833
+235 : -1.614158431533724
+236 : -3.085879100486636
+237 : -1.372243289835751
+238 : -0.7894200161099434
+239 : -1.2254303866066039
+240 : -1.4606467001140118
+241 : -4.6275276504457
+242 : -0.8526206202805042
+243 : -0.6653592139482498
+244 : -7.009251800831407
+245 : -2.3440187610685825
+246 : -0.9179777689278126
+247 : -0.8890397381037474
+248 : -1.3591642510145903
+249 : -1.8105453923344612
+250 : -1.6114808786660433
+251 : -1.2436426193453372
+252 : -1.321237322408706
+253 : -1.6297867696266621
+254 : -1.1883540619164705
+255 : -0.9601078825071454
+256 : -1.6380798481404781
+257 : -0.06697785202413797
+258 : -1.2529135290533304
+259 : -1.6037880592048168
+260 : -0.5543705681338906
+261 : -0.9670199258252978
+262 : -0.8658185200765729
+263 : -1.0580887985415757
+264 : -0.6132706291973591
+265 : -2.0735064391046762
+266 : -1.4849817864596844
+267 : -1.1625016829930246
+268 : -1.1141554713249207
+269 : -7.585785758681595
+270 : -1.039165023714304
+271 : -1.3979040523990989
+272 : -5.411008743103594
+273 : -0.9856343641877174
+274 : -0.9689251109957695
+275 : -2.4059701403602958
+276 : -0.9773242669180036
+277 : -0.5384827880188823
+278 : -4.68193924613297
+279 : -1.9585450552403927
+280 : -1.2051378609612584
+281 : 0.8242609053850174
+282 : -1.9218172719702125
+283 : -2.37771999835968
+284 : -0.7866878807544708
+285 : 0.013692796928808093
+286 : -5.503921631723642
+287 : -1.2296994706848636
+288 : -0.9354138989001513
+289 : -1.5290119210258126
+290 : -1.0722979558631778
+291 : 1.0601189495064318
+292 : -1.5079149566590786
+293 : -1.3965021660551429
+294 : -3.921049805765506
+295 : -0.3144974526949227
+296 : 3.386505665956065
+297 : -1.1874728449620306
+298 : -1.4659666074439883
+299 : -1.7379495585337281
+300 : -0.1861845040693879
+301 : -1.5895916959270835
+302 : -5.115269769914448
+303 : -0.21963057480752468
+304 : -1.4413466807454824
+305 : -1.342207161244005
+306 : -0.8982659922912717
+307 : -1.759483574423939
+308 : -1.2607199375052005
+309 : -0.7942926622927189
+310 : -0.5221918821334839
+311 : 4.282726848497987
+312 : -0.010418140329420567
+313 : -1.4500684458762407
+314 : -1.115668180398643
+315 : -3.6088397866114974
+316 : -2.116612311452627
+317 : -1.4045355934649706
+318 : -0.9379799570888281
+319 : -1.4293376673012972
+320 : -1.5322947669774294
+321 : -1.749986708164215
+322 : -1.0378589797765017
+323 : -1.401345444843173
+324 : -0.9151181634515524
+325 : -1.233085190411657
+326 : -1.206386933568865
+327 : -1.307746484875679
+328 : -1.2643008246086538
+329 : -0.9292915035039186
+330 : -0.8729669968597591
+331 : 1.3633355987258255
+332 : -12.075631697662175
+333 : 2.030815069563687
+334 : -1.285939196124673
+335 : -2.075351254083216
+336 : -0.5942778666503727
+337 : -2.6296065519563854
+338 : -0.24986767442896962
+339 : -1.9148574471473694
+340 : -1.5587382204830647
+341 : -1.6527282372117043
+342 : -1.5715807126834989
+343 : -0.15148440061602741
+344 : -4.286734443157911
+345 : -1.6337712667882442
+346 : -1.318175757303834
+347 : -1.374165785498917
+348 : -0.350443662609905
+349 : -1.528037492185831
+350 : -1.718549354467541
+351 : -1.0060365442186594
+352 : -1.6698517985641956
+353 : -1.5023881830275059
+354 : -1.529319847933948
+355 : -1.4047989575192332
+356 : 8.007214839104563
+357 : -4.548501340672374
+358 : -1.2132436274550855
+359 : -0.6700182715430856
+360 : -1.7509176675230265
+361 : -2.108821276575327
+362 : -0.9247462735511363
+363 : -3.862949133384973
+364 : -1.655608044937253
+365 : -1.0731075790245086
+366 : -1.740684277843684
+367 : -0.7531480267643929
+368 : -0.6474610255099833
+369 : 2.4138652719557285
+370 : -6.881601230241358
+371 : -0.5835278164595366
+372 : -0.22945903474465013
+373 : 0.5037794082891196
+374 : -4.177405520575121
+375 : -2.0904446793720126
+376 : -1.0678212735801935
+377 : -1.1508335266262293
+378 : -4.771191185340285
+379 : 3.9962046584114432
+380 : -1.6000367179512978
+381 : -2.421145930478815
+382 : 3.9264891645871103
+383 : -9.542206331156194
+384 : -11.327795517630875
+385 : -1.0108637092635036
+386 : -1.7317866459488869
+387 : -3.382094082189724
+388 : -2.261410690844059
+389 : -2.9672110360115767
+390 : -2.3371261283755302
+391 : -0.06283626100048423
+392 : -1.188400987535715
+393 : -1.0697125289589167
+394 : -1.1032199077308178
+395 : -1.000365573912859
+396 : -1.644452877342701
+397 : -1.0080055575817823
+398 : -1.44991513248533
+399 : -1.2252057371661067
+400 : -1.9910983624868095
+401 : -0.78267752379179
+402 : -2.6836021351628006
+403 : -0.9055138379335403
+404 : -0.9805965684354305
+405 : -1.383818024303764
+406 : -1.4205199982970953
+407 : -1.4754427364096045
+408 : -0.8987008826807141
+409 : 0.08945636078715324
+410 : -1.527892941609025
+411 : -1.3316784277558327
+412 : -1.1319400500506163
+413 : -1.213851145352237
+414 : -1.5870180428028107
+415 : -0.15769920498132706
+416 : -1.0422355621121824
+417 : -0.8629503017291427
+418 : -1.4321989752352238
+419 : -0.9679715777747333
+420 : 1.074264327995479
+421 : -0.8183660423383117
+422 : 0.8780796658247709
+423 : -5.3392029497772455
+424 : 1.7432932993397117
+!!! updated
+425 : 1.8018554169684649
+426 : -1.6996638923883438
+427 : -1.1757509061135352
+428 : -0.8830023435875773
+Setting up 2 worker threads for Enlighten.
+  Thread -> id: 7fced09aa700 -> priority: 1 
+  Thread -> id: 7fce57fff700 -> priority: 1 
+Traceback (most recent call last):
+  File "main.py", line 123, in <module>
+    returns = [episode(env, agent, i) for i in range(training_episodes)]
+  File "main.py", line 123, in <listcomp>
+    returns = [episode(env, agent, i) for i in range(training_episodes)]
+  File "main.py", line 30, in episode
+    next_state, reward, done, _ = env.step(action.numpy()[0])
+  File "/home/j/jensenj/.local/lib/python3.6/site-packages/gym_unity/envs/__init__.py", line 177, in step
+    self._env.step()
+  File "/home/j/jensenj/.local/lib/python3.6/site-packages/mlagents_envs/timers.py", line 305, in wrapped
+    return func(*args, **kwargs)
+  File "/home/j/jensenj/.local/lib/python3.6/site-packages/mlagents_envs/environment.py", line 319, in step
+    self._update_state(rl_output)
+  File "/home/j/jensenj/.local/lib/python3.6/site-packages/mlagents_envs/environment.py", line 275, in _update_state
+    agent_info_list, self._env_specs[brain_name]
+  File "/home/j/jensenj/.local/lib/python3.6/site-packages/mlagents_envs/timers.py", line 305, in wrapped
+    return func(*args, **kwargs)
+  File "/home/j/jensenj/.local/lib/python3.6/site-packages/mlagents_envs/rpc_utils.py", line 188, in steps_from_proto
+    obs_index, obs_shape, decision_agent_info_list
+  File "/home/j/jensenj/.local/lib/python3.6/site-packages/mlagents_envs/timers.py", line 305, in wrapped
+    return func(*args, **kwargs)
+  File "/home/j/jensenj/.local/lib/python3.6/site-packages/mlagents_envs/rpc_utils.py", line 152, in _process_vector_observation
+    _raise_on_nan_and_inf(np_obs, "observations")
+  File "/home/j/jensenj/.local/lib/python3.6/site-packages/mlagents_envs/rpc_utils.py", line 132, in _raise_on_nan_and_inf
+    raise RuntimeError(f"The {source} provided had Infinite values.")
+RuntimeError: The observations provided had Infinite values.
+2020-06-25 12:23:20 INFO [environment.py:418] Environment shut down with return code 0.

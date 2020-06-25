@@ -1,0 +1,322 @@
+slurmstepd-egau: error: Unable to create TMPDIR [/tmp/user/30108]: Permission denied
+slurmstepd-egau: error: Setting TMPDIR to /tmp
+------- load study successful
+Found path: /home/j/jensenj/PycharmProjects/Federer-Jr./src/../crawler_single/linux/dynamic_server/crawler_dynamic.x86_64
+Mono path[0] = '/home/j/jensenj/PycharmProjects/Federer-Jr./src/../crawler_single/linux/dynamic_server/crawler_dynamic_Data/Managed'
+Mono config path = '/home/j/jensenj/PycharmProjects/Federer-Jr./src/../crawler_single/linux/dynamic_server/crawler_dynamic_Data/MonoBleedingEdge/etc'
+Preloaded 'lib_burst_generated.so'
+Preloaded 'libgrpc_csharp_ext.x64.so'
+Initialize engine version: 2019.3.15f1 (59ff3e03856d)
+[Subsystems] Discovering subsystems at path /home/j/jensenj/PycharmProjects/Federer-Jr./src/../crawler_single/linux/dynamic_server/crawler_dynamic_Data/UnitySubsystems
+Forcing GfxDevice: Null
+GfxDevice: creating device client; threaded=0
+NullGfxDevice:
+    Version:  NULL 1.0 [1.0]
+    Renderer: Null Device
+    Vendor:   Unity Technologies
+Begin MonoManager ReloadAssembly
+- Completed reload, in  0.375 seconds
+WARNING: Shader Unsupported: 'Autodesk Interactive' - All passes removed
+WARNING: Shader Did you use #pragma only_renderers and omit this platform?
+UnloadTime: 0.445409 ms
+Fallback handler could not load library /home/j/jensenj/PycharmProjects/Federer-Jr./src/../crawler_single/linux/dynamic_server/crawler_dynamic_Data/Mono/libcoreclr.so
+Fallback handler could not load library /home/j/jensenj/PycharmProjects/Federer-Jr./src/../crawler_single/linux/dynamic_server/crawler_dynamic_Data/Mono/libcoreclr.so
+Fallback handler could not load library /home/j/jensenj/PycharmProjects/Federer-Jr./src/../crawler_single/linux/dynamic_server/crawler_dynamic_Data/Mono/libcoreclr.so
+Fallback handler could not load library /home/j/jensenj/PycharmProjects/Federer-Jr./src/../crawler_single/linux/dynamic_server/crawler_dynamic_Data/Mono/libSystem.dylib
+Fallback handler could not load library /home/j/jensenj/PycharmProjects/Federer-Jr./src/../crawler_single/linux/dynamic_server/crawler_dynamic_Data/Mono/libSystem.dylib.so
+Fallback handler could not load library /home/j/jensenj/PycharmProjects/Federer-Jr./src/../crawler_single/linux/dynamic_server/crawler_dynamic_Data/Mono/libSystem.dylib
+Fallback handler could not load library /home/j/jensenj/PycharmProjects/Federer-Jr./src/../crawler_single/linux/dynamic_server/crawler_dynamic_Data/Mono/libcoreclr.so
+Fallback handler could not load library /home/j/jensenj/PycharmProjects/Federer-Jr./src/../crawler_single/linux/dynamic_server/crawler_dynamic_Data/Mono/libcoreclr.so
+Fallback handler could not load library /home/j/jensenj/PycharmProjects/Federer-Jr./src/../crawler_single/linux/dynamic_server/crawler_dynamic_Data/Mono/libcoreclr.so
+Fallback handler could not load library /home/j/jensenj/PycharmProjects/Federer-Jr./src/../crawler_single/linux/dynamic_server/crawler_dynamic_Data/Mono/libSystem.dylib
+Fallback handler could not load library /home/j/jensenj/PycharmProjects/Federer-Jr./src/../crawler_single/linux/dynamic_server/crawler_dynamic_Data/Mono/libSystem.dylib.so
+Fallback handler could not load library /home/j/jensenj/PycharmProjects/Federer-Jr./src/../crawler_single/linux/dynamic_server/crawler_dynamic_Data/Mono/libSystem.dylib
+/home/j/jensenj/.local/lib/python3.6/site-packages/tensorboard/compat/tensorflow_stub/dtypes.py:541: FutureWarning: Passing (type, 1) or '1type' as a synonym of type is deprecated; in a future version of numpy, it will be understood as (type, (1,)) / '(1,)type'.
+  _np_qint8 = np.dtype([("qint8", np.int8, 1)])
+/home/j/jensenj/.local/lib/python3.6/site-packages/tensorboard/compat/tensorflow_stub/dtypes.py:542: FutureWarning: Passing (type, 1) or '1type' as a synonym of type is deprecated; in a future version of numpy, it will be understood as (type, (1,)) / '(1,)type'.
+  _np_quint8 = np.dtype([("quint8", np.uint8, 1)])
+/home/j/jensenj/.local/lib/python3.6/site-packages/tensorboard/compat/tensorflow_stub/dtypes.py:543: FutureWarning: Passing (type, 1) or '1type' as a synonym of type is deprecated; in a future version of numpy, it will be understood as (type, (1,)) / '(1,)type'.
+  _np_qint16 = np.dtype([("qint16", np.int16, 1)])
+/home/j/jensenj/.local/lib/python3.6/site-packages/tensorboard/compat/tensorflow_stub/dtypes.py:544: FutureWarning: Passing (type, 1) or '1type' as a synonym of type is deprecated; in a future version of numpy, it will be understood as (type, (1,)) / '(1,)type'.
+  _np_quint16 = np.dtype([("quint16", np.uint16, 1)])
+/home/j/jensenj/.local/lib/python3.6/site-packages/tensorboard/compat/tensorflow_stub/dtypes.py:545: FutureWarning: Passing (type, 1) or '1type' as a synonym of type is deprecated; in a future version of numpy, it will be understood as (type, (1,)) / '(1,)type'.
+  _np_qint32 = np.dtype([("qint32", np.int32, 1)])
+/home/j/jensenj/.local/lib/python3.6/site-packages/tensorboard/compat/tensorflow_stub/dtypes.py:550: FutureWarning: Passing (type, 1) or '1type' as a synonym of type is deprecated; in a future version of numpy, it will be understood as (type, (1,)) / '(1,)type'.
+  np_resource = np.dtype([("resource", np.ubyte, 1)])
+2020-06-24 12:52:12 INFO [environment.py:108] Connected to Unity environment with package version 1.0.2 and communication version 1.0.0
+2020-06-24 12:52:12 INFO [environment.py:265] Connected new brain:
+CrawlerDynamic?team=0
+2020-06-24 12:52:12 WARNING [__init__.py:92] The environment contains multiple observations. You must define allow_multiple_obs=True to receive them all. Otherwise, only the first visual observation (or vector observation ifthere are no visual observations) will be provided in the observation.
+/home/j/jensenj/.local/lib/python3.6/site-packages/gym/logger.py:30: UserWarning: WARN: Box bound precision lowered by casting to float32
+  warnings.warn(colorize('%s: %s'%('WARN', msg % args), 'yellow'))
+{'nr_output_features': 20, 'nr_input_features': 126, 'env': <gym_unity.envs.UnityToGymWrapper object at 0x7ff5f7c63080>, 'alpha': 0.003, 'tau': 0.95, 'clip': 0.2, 'minibatch_size': 32, 'hidden_units': 512, 'update_time_steps': 3072, 'ppo_epochs': 11, 'gamma': 0.9020229716092721, 'beta': 0.0011247383831758722}
+2020-06-24 12:06:34 - # 0 :	 -2.212812377139926
+2020-06-24 12:06:38 - # 1 :	 2.851967742666602
+2020-06-24 12:06:42 - # 2 :	 0.6211197599768639
+2020-06-24 12:06:45 - # 3 :	 -1.2174595617689192
+2020-06-24 12:06:49 - # 4 :	 2.815413267351687
+2020-06-24 12:06:52 - # 5 :	 -0.7936837151646614
+2020-06-24 12:06:54 - # 6 :	 -0.6301280912011862
+2020-06-24 12:06:57 - # 7 :	 -0.7926712417975068
+2020-06-24 12:06:00 - # 8 :	 -1.1446448639035225
+2020-06-24 12:06:03 - # 9 :	 -1.5103402738459408
+2020-06-24 12:06:06 - # 10 :	 -1.7648835806176066
+2020-06-24 12:06:10 - # 11 :	 0.040035927668213844
+2020-06-24 12:06:13 - # 12 :	 -1.8374561220407486
+2020-06-24 12:06:17 - # 13 :	 0.8847589818760753
+2020-06-24 12:06:19 - # 14 :	 -1.2044753949157894
+2020-06-24 12:06:24 - # 15 :	 4.131926231086254
+2020-06-24 12:06:27 - # 16 :	 -1.3224769048392773
+2020-06-24 12:06:30 - # 17 :	 -2.171672231517732
+2020-06-24 12:06:35 - # 18 :	 -5.234909042716026
+2020-06-24 12:06:41 - # 19 :	 1.1800652826204896
+2020-06-24 12:06:44 - # 20 :	 -1.0486038629896939
+2020-06-24 12:06:47 - # 21 :	 -1.4385463865473866
+2020-06-24 12:06:50 - # 22 :	 -0.994715778157115
+2020-06-24 12:06:55 - # 23 :	 -5.367293251678348
+2020-06-24 12:06:58 - # 24 :	 -2.2874631041195244
+2020-06-24 12:06:01 - # 25 :	 -2.4902373403310776
+2020-06-24 12:06:04 - # 26 :	 -1.338667675619945
+2020-06-24 12:06:07 - # 27 :	 -0.9832384726032615
+2020-06-24 12:06:10 - # 28 :	 -1.7242292053997517
+2020-06-24 12:06:14 - # 29 :	 -0.3804651377722621
+2020-06-24 12:06:18 - # 30 :	 -3.05042870901525
+2020-06-24 12:06:22 - # 31 :	 -2.4668257948942482
+2020-06-24 12:06:24 - # 32 :	 -1.5386765962466598
+2020-06-24 12:06:28 - # 33 :	 -1.7165239827008918
+2020-06-24 12:06:31 - # 34 :	 -1.9514602040871978
+2020-06-24 12:06:38 - # 35 :	 -1.4025695868767798
+2020-06-24 12:06:43 - # 36 :	 6.656637865584344
+2020-06-24 12:06:46 - # 37 :	 -1.1849304044153541
+2020-06-24 12:06:49 - # 38 :	 -1.6483795270323753
+2020-06-24 12:06:56 - # 39 :	 -6.912999012041837
+2020-06-24 12:06:59 - # 40 :	 -1.453902563545853
+2020-06-24 12:06:02 - # 41 :	 -0.8263100292533636
+2020-06-24 12:06:05 - # 42 :	 -1.3677726556779817
+2020-06-24 12:06:08 - # 43 :	 -1.1546925830189139
+2020-06-24 12:06:10 - # 44 :	 -1.4027755595743656
+2020-06-24 12:06:14 - # 45 :	 -2.667211395688355
+2020-06-24 12:06:18 - # 46 :	 -2.079774516634643
+2020-06-24 12:06:21 - # 47 :	 -1.3641616757959127
+2020-06-24 12:06:24 - # 48 :	 -0.7052658135071397
+2020-06-24 12:06:28 - # 49 :	 -6.064200892113149
+2020-06-24 12:06:31 - # 50 :	 -1.2826514523476362
+2020-06-24 12:06:34 - # 51 :	 -1.2518782392144203
+2020-06-24 12:06:37 - # 52 :	 -2.2697074562311172
+2020-06-24 12:06:40 - # 53 :	 -1.0685541238635778
+2020-06-24 12:06:43 - # 54 :	 -0.7898707389831543
+2020-06-24 12:06:45 - # 55 :	 -0.872876716312021
+2020-06-24 12:06:49 - # 56 :	 0.6613430758006871
+2020-06-24 12:06:52 - # 57 :	 -1.8916814308613539
+2020-06-24 12:06:55 - # 58 :	 -1.7552169263362885
+2020-06-24 12:06:58 - # 59 :	 0.7470527570694685
+2020-06-24 12:06:02 - # 60 :	 -1.1557398070581257
+2020-06-24 12:06:04 - # 61 :	 -0.9952008370310068
+2020-06-24 12:06:09 - # 62 :	 1.3314685141667724
+2020-06-24 12:06:12 - # 63 :	 -1.8419529255479574
+2020-06-24 12:06:17 - # 64 :	 -2.6884494852274656
+2020-06-24 12:06:19 - # 65 :	 -0.8724415367469192
+2020-06-24 12:06:22 - # 66 :	 -0.9589404612779617
+2020-06-24 12:06:25 - # 67 :	 -1.9508963525295258
+2020-06-24 12:06:28 - # 68 :	 -1.6207591779530048
+2020-06-24 12:06:31 - # 69 :	 -3.3874871488660574
+2020-06-24 12:06:34 - # 70 :	 -1.952224612236023
+2020-06-24 12:06:39 - # 71 :	 0.06712854898069054
+2020-06-24 12:06:43 - # 72 :	 -1.3152664676308632
+2020-06-24 12:06:46 - # 73 :	 -0.5421643909066916
+2020-06-24 12:06:49 - # 74 :	 -0.9765043193474412
+2020-06-24 12:06:53 - # 75 :	 -3.1641819402575493
+2020-06-24 12:06:56 - # 76 :	 -1.3299000464612618
+2020-06-24 12:06:59 - # 77 :	 -1.1261576833203435
+2020-06-24 12:06:02 - # 78 :	 -1.0191867239773273
+2020-06-24 12:06:04 - # 79 :	 -1.4023271643090993
+2020-06-24 12:06:08 - # 80 :	 1.4056591019034386
+2020-06-24 12:06:12 - # 81 :	 -3.7548726657405496
+2020-06-24 12:06:21 - # 82 :	 1.8956853616982698
+2020-06-24 12:06:24 - # 83 :	 -0.9522048737853765
+2020-06-24 12:06:26 - # 84 :	 -0.970312001183629
+2020-06-24 12:06:29 - # 85 :	 -0.9591761054471135
+2020-06-24 12:06:33 - # 86 :	 -2.199091726448387
+2020-06-24 12:06:35 - # 87 :	 -1.3991328058764338
+2020-06-24 12:06:38 - # 88 :	 -1.6830590665340424
+2020-06-24 12:06:41 - # 89 :	 -0.9646403715014458
+2020-06-24 12:06:45 - # 90 :	 -1.2902199879754335
+2020-06-24 12:06:47 - # 91 :	 -1.1079156147316098
+2020-06-24 12:06:50 - # 92 :	 -1.6612404435873032
+2020-06-24 12:06:53 - # 93 :	 -1.7160402163863182
+2020-06-24 12:06:56 - # 94 :	 -1.4012262551113963
+2020-06-24 12:06:00 - # 95 :	 -1.1249871510080993
+2020-06-24 12:06:04 - # 96 :	 -3.101824574172497
+2020-06-24 12:06:08 - # 97 :	 3.649723851121962
+2020-06-24 12:06:11 - # 98 :	 -1.240080289542675
+2020-06-24 12:06:16 - # 99 :	 -4.48080974817276
+2020-06-24 12:06:19 - # 100 :	 -0.7653657594928518
+2020-06-24 12:06:25 - # 101 :	 -7.956914668902755
+2020-06-24 12:06:28 - # 102 :	 -1.648707845248282
+2020-06-24 12:06:31 - # 103 :	 -0.46836865320801735
+2020-06-24 12:06:34 - # 104 :	 -1.691747922450304
+2020-06-24 12:06:36 - # 105 :	 -0.695338724181056
+2020-06-24 12:06:39 - # 106 :	 -1.099447414278984
+2020-06-24 12:06:42 - # 107 :	 -1.358638766221702
+2020-06-24 12:06:47 - # 108 :	 2.265050135552883
+2020-06-24 12:06:53 - # 109 :	 -2.8226647885749117
+2020-06-24 12:06:56 - # 110 :	 -1.2772311698645353
+2020-06-24 12:06:59 - # 111 :	 -1.4433850944042206
+2020-06-24 12:06:02 - # 112 :	 -1.3859313055872917
+2020-06-24 12:06:05 - # 113 :	 -1.460758433677256
+2020-06-24 12:06:07 - # 114 :	 -1.3643387649208307
+2020-06-24 12:06:10 - # 115 :	 -1.1403020489960909
+2020-06-24 12:06:13 - # 116 :	 -0.8146226424723864
+2020-06-24 12:06:16 - # 117 :	 -1.197772677987814
+2020-06-24 12:06:18 - # 118 :	 -0.9367325222119689
+2020-06-24 12:06:25 - # 119 :	 -7.439001715509221
+2020-06-24 12:06:32 - # 120 :	 -7.167184007354081
+2020-06-24 12:06:36 - # 121 :	 0.8273136857897043
+2020-06-24 12:06:42 - # 122 :	 4.130089966580272
+2020-06-24 12:06:45 - # 123 :	 -0.29232437652535737
+2020-06-24 12:06:49 - # 124 :	 -2.684467578306794
+2020-06-24 12:06:52 - # 125 :	 -1.3538042157888412
+2020-06-24 12:06:55 - # 126 :	 -0.31877839006483555
+2020-06-24 12:06:58 - # 127 :	 -3.263780997134745
+2020-06-24 13:06:01 - # 128 :	 -2.354198668152094
+2020-06-24 13:06:04 - # 129 :	 -0.6680656149983406
+2020-06-24 13:06:11 - # 130 :	 -10.554493364877999
+2020-06-24 13:06:16 - # 131 :	 -4.3235421339049935
+2020-06-24 13:06:19 - # 132 :	 0.22444401681423187
+2020-06-24 13:06:23 - # 133 :	 -2.5653772866353393
+2020-06-24 13:06:26 - # 134 :	 -0.5984217906370759
+2020-06-24 13:06:30 - # 135 :	 -0.004796484485268593
+2020-06-24 13:06:34 - # 136 :	 0.020869939122349024
+2020-06-24 13:06:38 - # 137 :	 -1.3158193023409694
+2020-06-24 13:06:41 - # 138 :	 -1.7535786926746368
+2020-06-24 13:06:44 - # 139 :	 -0.9859341904520988
+2020-06-24 13:06:47 - # 140 :	 0.17157447151839733
+2020-06-24 13:06:50 - # 141 :	 -1.4569183550775051
+2020-06-24 13:06:53 - # 142 :	 -0.88468830101192
+2020-06-24 13:06:56 - # 143 :	 -1.544805996119976
+2020-06-24 13:06:59 - # 144 :	 -1.3479149611666799
+2020-06-24 13:06:04 - # 145 :	 1.9308104652445763
+2020-06-24 13:06:07 - # 146 :	 -1.8175117671489716
+2020-06-24 13:06:15 - # 147 :	 6.647791648283601
+2020-06-24 13:06:19 - # 148 :	 3.328161394689232
+2020-06-24 13:06:22 - # 149 :	 -1.6567356772720814
+2020-06-24 13:06:25 - # 150 :	 -1.640828357078135
+2020-06-24 13:06:29 - # 151 :	 0.3202005662024021
+2020-06-24 13:06:32 - # 152 :	 -1.5544909383170307
+2020-06-24 13:06:35 - # 153 :	 -0.8582268571481109
+!!! updated
+2020-06-24 13:06:47 - # 154 :	 -0.0870584212243557
+2020-06-24 13:06:49 - # 155 :	 -0.7864505546167493
+2020-06-24 13:06:52 - # 156 :	 -2.211647190153599
+2020-06-24 13:06:55 - # 157 :	 -0.9831257266923785
+2020-06-24 13:06:58 - # 158 :	 -0.9211358008906245
+2020-06-24 13:06:00 - # 159 :	 -0.963976239785552
+2020-06-24 13:06:03 - # 160 :	 -1.3380174660123885
+2020-06-24 13:06:06 - # 161 :	 -0.8234901456162333
+2020-06-24 13:06:08 - # 162 :	 -1.2090211994946003
+2020-06-24 13:06:11 - # 163 :	 -1.976080946624279
+2020-06-24 13:06:14 - # 164 :	 -1.1994488961063325
+2020-06-24 13:06:17 - # 165 :	 -1.3838188536465168
+2020-06-24 13:06:19 - # 166 :	 -1.1126454225741327
+2020-06-24 13:06:22 - # 167 :	 -1.3223793879151344
+2020-06-24 13:06:25 - # 168 :	 -1.0403085383586586
+2020-06-24 13:06:28 - # 169 :	 -1.176051814109087
+2020-06-24 13:06:30 - # 170 :	 -0.8426588140428066
+2020-06-24 13:06:33 - # 171 :	 -0.9586239773780107
+2020-06-24 13:06:36 - # 172 :	 -1.3209902183152735
+2020-06-24 13:06:38 - # 173 :	 -1.1227500289678574
+2020-06-24 13:06:41 - # 174 :	 -0.9649647143669426
+2020-06-24 13:06:44 - # 175 :	 -1.3768329937011003
+2020-06-24 13:06:47 - # 176 :	 -1.0919310019817203
+2020-06-24 13:06:49 - # 177 :	 -0.9336705785244703
+2020-06-24 13:06:52 - # 178 :	 -1.058781576808542
+2020-06-24 13:06:55 - # 179 :	 -1.1530578714446165
+2020-06-24 13:06:57 - # 180 :	 -1.0397755671292543
+2020-06-24 13:06:00 - # 181 :	 -1.283844561316073
+2020-06-24 13:06:03 - # 182 :	 -1.9584800601005554
+2020-06-24 13:06:06 - # 183 :	 -1.07788353622891
+2020-06-24 13:06:08 - # 184 :	 -1.1609989162534475
+action: tensor([[ 3.2744e+34, -3.6321e+34, -2.8087e+34, -6.0226e+34, -5.9229e+34,
+         -2.0542e+34,  4.3764e+34,  5.1359e+34,  8.6976e+33,  3.8453e+34,
+         -2.1132e+34,  2.9304e+34, -3.0667e+34,  2.5571e+34,  2.8911e+34,
+         -6.2977e+34, -4.5619e+34,  4.2991e+34,  4.8244e+34, -7.2777e+34]]) , log_prob: tensor([[-0.9929, -0.9586, -1.0311, -0.9574, -0.9850, -0.9950, -0.9845, -1.0721,
+         -1.0066, -1.0112, -1.0235, -1.0198, -0.9537, -0.9269, -0.9115, -0.9247,
+         -1.0423, -0.8844, -0.9756, -1.0095]], grad_fn=<SubBackward0>) , value: tensor([[-0.0346]], grad_fn=<AddmmBackward>)
+action numpy:  [ 3.2744138e+34 -3.6320841e+34 -2.8086559e+34 -6.0226035e+34
+ -5.9228786e+34 -2.0541993e+34  4.3764369e+34  5.1359211e+34
+  8.6975575e+33  3.8452557e+34 -2.1131775e+34  2.9304071e+34
+ -3.0667360e+34  2.5570924e+34  2.8911065e+34 -6.2977179e+34
+ -4.5618531e+34  4.2991310e+34  4.8243979e+34 -7.2776544e+34]
+[W 2020-06-24 13:03:11,717] Setting status of trial#52 as TrialState.FAIL because of the following error: RuntimeError('The observations provided had Infinite values.',)
+Traceback (most recent call last):
+  File "/home/j/jensenj/.local/lib/python3.6/site-packages/optuna/study.py", line 734, in _run_trial
+    result = func(trial)
+  File "main-optuna.py", line 100, in objective
+    returns = [episode(env, agent, params, writer, i) for i in range(training_episodes)]
+  File "main-optuna.py", line 100, in <listcomp>
+    returns = [episode(env, agent, params, writer, i) for i in range(training_episodes)]
+  File "main-optuna.py", line 36, in episode
+    raise e
+  File "main-optuna.py", line 32, in episode
+    next_state, reward, done, _ = env.step(action.numpy()[0])
+  File "/home/j/jensenj/.local/lib/python3.6/site-packages/gym_unity/envs/__init__.py", line 177, in step
+    self._env.step()
+  File "/home/j/jensenj/.local/lib/python3.6/site-packages/mlagents_envs/timers.py", line 305, in wrapped
+    return func(*args, **kwargs)
+  File "/home/j/jensenj/.local/lib/python3.6/site-packages/mlagents_envs/environment.py", line 319, in step
+    self._update_state(rl_output)
+  File "/home/j/jensenj/.local/lib/python3.6/site-packages/mlagents_envs/environment.py", line 275, in _update_state
+    agent_info_list, self._env_specs[brain_name]
+  File "/home/j/jensenj/.local/lib/python3.6/site-packages/mlagents_envs/timers.py", line 305, in wrapped
+    return func(*args, **kwargs)
+  File "/home/j/jensenj/.local/lib/python3.6/site-packages/mlagents_envs/rpc_utils.py", line 188, in steps_from_proto
+    obs_index, obs_shape, decision_agent_info_list
+  File "/home/j/jensenj/.local/lib/python3.6/site-packages/mlagents_envs/timers.py", line 305, in wrapped
+    return func(*args, **kwargs)
+  File "/home/j/jensenj/.local/lib/python3.6/site-packages/mlagents_envs/rpc_utils.py", line 152, in _process_vector_observation
+    _raise_on_nan_and_inf(np_obs, "observations")
+  File "/home/j/jensenj/.local/lib/python3.6/site-packages/mlagents_envs/rpc_utils.py", line 132, in _raise_on_nan_and_inf
+    raise RuntimeError(f"The {source} provided had Infinite values.")
+RuntimeError: The observations provided had Infinite values.
+Traceback (most recent call last):
+  File "main-optuna.py", line 118, in <module>
+    study.optimize(objective, n_trials=10000)
+  File "/home/j/jensenj/.local/lib/python3.6/site-packages/optuna/study.py", line 339, in optimize
+    func, n_trials, timeout, catch, callbacks, gc_after_trial, None
+  File "/home/j/jensenj/.local/lib/python3.6/site-packages/optuna/study.py", line 682, in _optimize_sequential
+    self._run_trial_and_callbacks(func, catch, callbacks, gc_after_trial)
+  File "/home/j/jensenj/.local/lib/python3.6/site-packages/optuna/study.py", line 713, in _run_trial_and_callbacks
+    trial = self._run_trial(func, catch, gc_after_trial)
+  File "/home/j/jensenj/.local/lib/python3.6/site-packages/optuna/study.py", line 734, in _run_trial
+    result = func(trial)
+  File "main-optuna.py", line 100, in objective
+    returns = [episode(env, agent, params, writer, i) for i in range(training_episodes)]
+  File "main-optuna.py", line 100, in <listcomp>
+    returns = [episode(env, agent, params, writer, i) for i in range(training_episodes)]
+  File "main-optuna.py", line 36, in episode
+    raise e
+  File "main-optuna.py", line 32, in episode
+    next_state, reward, done, _ = env.step(action.numpy()[0])
+  File "/home/j/jensenj/.local/lib/python3.6/site-packages/gym_unity/envs/__init__.py", line 177, in step
+    self._env.step()
+  File "/home/j/jensenj/.local/lib/python3.6/site-packages/mlagents_envs/timers.py", line 305, in wrapped
+    return func(*args, **kwargs)
+  File "/home/j/jensenj/.local/lib/python3.6/site-packages/mlagents_envs/environment.py", line 319, in step
+    self._update_state(rl_output)
+  File "/home/j/jensenj/.local/lib/python3.6/site-packages/mlagents_envs/environment.py", line 275, in _update_state
+    agent_info_list, self._env_specs[brain_name]
+  File "/home/j/jensenj/.local/lib/python3.6/site-packages/mlagents_envs/timers.py", line 305, in wrapped
+    return func(*args, **kwargs)
+  File "/home/j/jensenj/.local/lib/python3.6/site-packages/mlagents_envs/rpc_utils.py", line 188, in steps_from_proto
+    obs_index, obs_shape, decision_agent_info_list
+  File "/home/j/jensenj/.local/lib/python3.6/site-packages/mlagents_envs/timers.py", line 305, in wrapped
+    return func(*args, **kwargs)
+  File "/home/j/jensenj/.local/lib/python3.6/site-packages/mlagents_envs/rpc_utils.py", line 152, in _process_vector_observation
+    _raise_on_nan_and_inf(np_obs, "observations")
+  File "/home/j/jensenj/.local/lib/python3.6/site-packages/mlagents_envs/rpc_utils.py", line 132, in _raise_on_nan_and_inf
+    raise RuntimeError(f"The {source} provided had Infinite values.")
+RuntimeError: The observations provided had Infinite values.
+Setting up 2 worker threads for Enlighten.
+  Thread -> id: 7f6bd3a98700 -> priority: 1 
+  Thread -> id: 7f6bd3297700 -> priority: 1 
+2020-06-24 13:03:12 INFO [environment.py:418] Environment shut down with return code 0.
