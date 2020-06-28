@@ -12,6 +12,8 @@ import os
 """
  Experience Buffer for Deep RL Algorithms.
 """
+
+
 class ReplayMemory:
 
     def __init__(self, gamma, tau):
@@ -41,7 +43,11 @@ class ReplayMemory:
         advantages = returns - values
         batch_size = len(self.states)
         ids = np.random.permutation(batch_size)
-        ids = np.split(ids, batch_size // minibatch_size)
+
+        batch_count = batch_size // minibatch_size
+        # ids = np.split(ids, batch_count)
+        # split unevenly if odd
+        ids = np.array_split(ids, batch_count)
 
         for i in range(len(ids)):
             yield states[ids[i]], actions[ids[i]], log_probs[ids[i]], returns[ids[i]], advantages[ids[i]]
@@ -51,8 +57,8 @@ class ReplayMemory:
         gae = 0
         returns = []
         for step in reversed(range(len(self.rewards))):
-            delta = self.rewards[step] + self.gamma * values[step + 1] * (1-self.dones[step]) - values[step]
-            gae = delta + self.gamma * self.tau * (1-self.dones[step]) * gae
+            delta = self.rewards[step] + self.gamma * values[step + 1] * (1 - self.dones[step]) - values[step]
+            gae = delta + self.gamma * self.tau * (1 - self.dones[step]) * gae
             returns.insert(0, gae + values[step])
         return returns
 
@@ -137,7 +143,8 @@ class PPOLearner:
 
         for _ in range(self.ppo_epochs):
 
-            for states, actions, old_log_probs, returns, advantages in self.memory.sample_batch(self.minibatch_size, next_value):
+            for states, actions, old_log_probs, returns, advantages in self.memory.sample_batch(self.minibatch_size,
+                                                                                                next_value):
                 dists, values = self.ppo_net(states)
                 entropy = dists.entropy().mean()
                 new_log_probs = dists.log_prob(actions)

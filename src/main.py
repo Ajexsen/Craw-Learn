@@ -1,10 +1,13 @@
+import sys
+
 from torch.utils.tensorboard import SummaryWriter
 import torch
 import gym
 import time
 import os
 
-import src.ppo as a
+import numpy as np
+import ppo as a
 from gym_unity.envs import UnityToGymWrapper
 from mlagents_envs.environment import UnityEnvironment
 
@@ -37,6 +40,7 @@ def episode(env, agent, nr_episode=0):
 
         if time_step % params["update_time_steps"] == 0 and time_step != 0:
             agent.update(next_state)
+            print("!!! updated")
 
         state = next_state
         undiscounted_return += reward
@@ -59,9 +63,28 @@ env = UnityToGymWrapper(unity_env=unity_env)
 # setup other continuous environment to check for bugs
 #env = gym.make('MountainCarContinuous-v0')
 
-env._max_episode_steps = 1500 # (default)
+# env._max_episode_steps = 1500 # (default)
 
 params = {}
+
+# update_time_steps 2048 - open end
+# epochs 3-32
+# beta 0.001 - 0.1
+# gamma 0.9 - 0.99
+# layers 2 - 8
+# (clip 0.1 - 0.3)
+
+# learning rate = alpha (default?)
+params["alpha"] = 3e-3
+params["tau"] = 0.95
+# not tune (default)
+params["clip"] = 0.2
+
+# (Alex) 1024 nodes, 32 mini batch size
+# hidden_units: 2^x, bigger as input [256, 512]
+params["hidden_units"] = 1024
+# [32, 64]
+params["minibatch_size"] = 32
 
 params["nr_output_features"] = env.action_space.shape[0]
 params["nr_input_features"] = env.observation_space.shape[0]
@@ -69,31 +92,27 @@ params["env"] = env
 
 # Hyperparameters
 # min. two layer
-training_episodes = 10000
+training_episodes = 1000
 
-# greater than 4096
-params["update_time_steps"] = 4096
 
-# hidden_units: 2^x, bigger as input [256, 512]
-params["hidden_units"] = 512
+update_time_steps = [2048, 4096, 8192, 10240] # 4
+ppo_epochs = [1, 2, 4, 8, 16, 32] # 6
+beta = [0.001, 0.01, 0.1] # 3
+gamma = [0.9, 0.99] # 2
 
-# [32, 64]
-params["minibatch_size"] = 32
+if len(sys.argv) > 4:
+    params["update_time_steps"] = update_time_steps[int(sys.argv[1])]
+    params["ppo_epochs"] = ppo_epochs[int(sys.argv[2])]
+    params["beta"] = beta[int(sys.argv[3])]
+    params["gamma"] = gamma[int(sys.argv[4])]
+else:
+    params["update_time_steps"] = 4096
+    params["ppo_epochs"] = 4
+    params["beta"] = 0.005
+    params["gamma"] = 0.99
 
-# learning rate = alpha (default?)
-params["alpha"] = 3e-3
+print("update_time_steps:", params["update_time_steps"], ", ppo_epochs:", params["ppo_epochs"], ", beta: ", params["beta"], ", gamma", params["gamma"])
 
-# depending on loss?
-params["beta"] = 0.005
-
-params["gamma"] = 0.99
-params["tau"] = 0.95
-
-# tune -> is 1 worst than 4? -> [1,4,8,...]
-params["ppo_epochs"] = 4
-
-# not tune (default)
-params["clip"] = 0.2
 
 
 # Agent setup
@@ -104,4 +123,4 @@ agent = a.PPOLearner(params, writer)
 returns = [episode(env, agent, i) for i in range(training_episodes)]
 writer.close()
 
-torch.save(agent.ppo_net, "PPONet_190620")
+# torch.save(agent.ppo_net, "PPONet_190620")
