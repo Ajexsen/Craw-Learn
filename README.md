@@ -7,10 +7,8 @@ Optuna
 Tensorboard
 
 ## Fragen
-* Wie kann man beim CIP-Pool den Build anwenden?
-* Vorgehensweise: 25 trainieren, schlecht trainierte wegwerfen?
-* Was erwartet er von uns?
-* Hyperparametertuning alle Hyperparameter geht nicht, welche sind am wichtigsten?
+* Bug bei Linux, warum?
+* Einschätzung, wann ist Agent fertig?
 
 ## Aufteilung
 
@@ -27,5 +25,3 @@ Tensorboard
 * gamma 0.9 - 0.99
 * layers 2 - 8
 * (clip 0.1 - 0.3)
-
-### nächstes Treffen 25.06 - 21:00
