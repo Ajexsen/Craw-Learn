@@ -74,12 +74,14 @@ def episode(env, agent, params, writer, nr_episode=0):
 
 def objective(trial):
     # window_path = "../crawler_single/UnityEnvironment"
-    linux_path = "../crawler_single/linux/dynamic_server/crawler_dynamic.x86_64"
+    linux_path = "../crawler_single/linux/static_server/crawler_static.x86_64" # crawler
+    # linux_path = "../bouncer_single/linux_server/bouncer.x86_64" # bouncer
     # unity_env = UnityEnvironment(file_name=window_path, seed=1, side_channels=[])
     global worker_id
     print("worker_id:", worker_id)
-    unity_env = UnityEnvironment(file_name=linux_path, worker_id=worker_id)
-    env = UnityToGymWrapper(unity_env=unity_env)
+    env = UnityEnvironment(file_name=linux_path, worker_id=worker_id)
+    # unity_env = UnityEnvironment(file_name=linux_path, worker_id=worker_id)
+    # env = UnityToGymWrapper(unity_env=unity_env)
     # env = gym.make('MountainCarContinuous-v0')
 
     env._max_episode_steps = 1500  # (default)

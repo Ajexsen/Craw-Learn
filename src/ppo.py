@@ -157,8 +157,9 @@ class PPOLearner:
                 critic_loss = (returns - values).pow(2).mean()
 
                 loss = 0.5 * critic_loss + actor_loss - self.beta * entropy
-                self.writer.add_scalar('loss', loss)
-                self.writer.add_scalar('entropy', entropy / loss)
+                if self.writer is not None:
+                    self.writer.add_scalar('loss', loss)
+                    self.writer.add_scalar('entropy', entropy / loss)
 
                 self.optimizer.zero_grad()
                 loss.backward()
