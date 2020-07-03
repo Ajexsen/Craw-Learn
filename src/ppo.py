@@ -78,6 +78,7 @@ class PPONet(nn.Module):
         # 64 hidden-units in der Uebung 5, in RL- Adventure 256 units
 
         self.critic = nn.Sequential(
+			nn.Tanh(),
             nn.Linear(num_inputs, hidden_units),
             nn.ReLU(),
             nn.Linear(hidden_units, hidden_units),
@@ -86,6 +87,7 @@ class PPONet(nn.Module):
         )
 
         self.actor = nn.Sequential(
+			nn.Tanh(),
             nn.Linear(num_inputs, hidden_units),
             nn.ReLU(),
             nn.Linear(hidden_units, hidden_units),
