@@ -83,12 +83,16 @@ class PPONet(nn.Module):
             nn.ReLU(),
             nn.Linear(hidden_units, hidden_units),
             nn.ReLU(),
+            nn.Linear(hidden_units, hidden_units),
+            nn.ReLU(),
             nn.Linear(hidden_units, 1)
         )
 
         self.actor = nn.Sequential(
 			nn.Tanh(),
             nn.Linear(num_inputs, hidden_units),
+            nn.ReLU(),
+            nn.Linear(hidden_units, hidden_units),
             nn.ReLU(),
             nn.Linear(hidden_units, hidden_units),
             nn.ReLU(),
@@ -114,6 +118,8 @@ class PPONet(nn.Module):
 class PPOLearner:
 
     def __init__(self, params, writer):
+        use_cuda = torch.cuda.is_available()
+        # self.device = torch.device("cuda" if use_cuda else "cpu")
         self.device = torch.device("cpu")
         self.writer = writer
         self.nr_output_features = params["nr_output_features"]

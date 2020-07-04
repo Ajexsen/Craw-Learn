@@ -10,6 +10,7 @@ import numpy as np
 import ppo as a
 from gym_unity.envs import UnityToGymWrapper
 from mlagents_envs.environment import UnityEnvironment
+from evaluate import evaluate_policy
 
 
 def episode(env, agent, nr_episode=0):
@@ -50,7 +51,7 @@ def episode(env, agent, nr_episode=0):
 
 #    if not os.isdir("../Net_Crawler"):
 #        os.mkdir("../Net_Crawler")
-    torch.save(agent.ppo_net, "../Net_Crawler/PPONet_crawler" + time.strftime("%y%m%d_%H") + ".pt")
+#     torch.save(agent.ppo_net, "../Net_Crawler/PPONet_crawler" + time.strftime("%y%m%d_%H") + ".pt")
     return undiscounted_return
 
 
@@ -119,8 +120,12 @@ print("update_time_steps:", params["update_time_steps"], ", ppo_epochs:", params
 writer = SummaryWriter()
 time_step = 1
 agent = a.PPOLearner(params, writer)
-
 returns = [episode(env, agent, i) for i in range(training_episodes)]
+time_str = time.strftime("%y%m%d_%H")
+print("////")
+print(torch.save(agent.ppo_net, "../Net_Crawler/PPONet_crawler{}_{}.pt".format("test-", time_str)))
+mean_reward, std_reward = evaluate_policy(agent.ppo_net, env, n_eval_episodes=10)
+print("{}, {}".format(mean_reward, std_reward))
 writer.close()
 
 # torch.save(agent.ppo_net, "PPONet_190620")
