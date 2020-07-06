@@ -78,7 +78,10 @@ class PPONet(nn.Module):
         # 64 hidden-units in der Uebung 5, in RL- Adventure 256 units
 
         self.critic = nn.Sequential(
+            nn.Tanh(),
             nn.Linear(num_inputs, hidden_units),
+            nn.ReLU(),
+            nn.Linear(hidden_units, hidden_units),
             nn.ReLU(),
             nn.Linear(hidden_units, hidden_units),
             nn.ReLU(),
@@ -86,11 +89,14 @@ class PPONet(nn.Module):
         )
 
         self.actor = nn.Sequential(
+            nn.Tanh(),
             nn.Linear(num_inputs, hidden_units),
             nn.ReLU(),
             nn.Linear(hidden_units, hidden_units),
             nn.ReLU(),
-            nn.Linear(hidden_units, num_outputs),
+            nn.Linear(hidden_units, hidden_units),
+            nn.ReLU(),
+            nn.Linear(hidden_units, num_outputs)
         )
         # muesste einen Tensor mit Form (1, (env.action_space.shape[0])) erzeugen, jedes Element hat den Wert std
         self.log_std = nn.Parameter(torch.ones(1, num_outputs) * std)
@@ -127,6 +133,7 @@ class PPOLearner:
         self.optimizer = torch.optim.Adam(self.ppo_net.parameters(), lr=self.alpha)
         self.ppo_epochs = params["ppo_epochs"]
         self.clip_param = params["clip"]
+        self.step = 0
 
     def policy(self, state):
         action_dist, value = self.predict(state)
@@ -157,8 +164,9 @@ class PPOLearner:
                 critic_loss = (returns - values).pow(2).mean()
 
                 loss = 0.5 * critic_loss + actor_loss - self.beta * entropy
-                self.writer.add_scalar('loss', loss)
-                self.writer.add_scalar('entropy', entropy / loss)
+                self.writer.add_scalar('loss', loss, self.step)
+                self.writer.add_scalar('entropy - actor+criticloss', entropy - (actor_loss + critic_loss), self.step)
+                self.step += 1
 
                 self.optimizer.zero_grad()
                 loss.backward()
