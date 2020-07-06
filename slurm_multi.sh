@@ -7,7 +7,7 @@ python3 -c "import optuna;optuna.study.create_study(study_name='crawler-JR', sto
 cd ..
 #optuna delete-study 'crawler-JR'
 #optuna dashboard --study-name "crawler-JR" --storage "sqlite:///example.db"
-for i in `seq 1 25`;
+for i in `seq 1 24`;
 do
     sbatch --partition=Luna,Sibirien,Antarktis --job-name=ppo_${i} --cpus-per-task=4 --output=slurm/slurm${i}.out ppo_fed.sh ${i}
 done

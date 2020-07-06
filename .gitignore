@@ -1,1 +1,6 @@
-/unity_ml/*
+/slurm
+/Net_Crawler
+/.idea
+/src/runs
+/crawler_single
+

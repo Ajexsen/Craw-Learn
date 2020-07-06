@@ -43,10 +43,15 @@ def objective(trial):
     print(ppo_net_arch)
 
 
-    params["update_time_steps"] = trial.suggest_int('update_time_steps', 2048, 10240, 1024)
-    params["ppo_epochs"] = trial.suggest_int('ppo_epochs', 2, 32, 4)
-    params["gamma"] = trial.suggest_float('gamma', 0.9, 0.99)  # , 0.01)
-    params["beta"] = trial.suggest_float('beta', 0.001, 0.1)  # , 0.001)
+    # params["update_time_steps"] = trial.suggest_int('update_time_steps', 2048, 10240, 1024)
+    # params["ppo_epochs"] = trial.suggest_int('ppo_epochs', 2, 32, 4)
+    # params["gamma"] = trial.suggest_float('gamma', 0.9, 0.99)  # , 0.01)
+    # params["beta"] = trial.suggest_float('beta', 0.001, 0.1)  # , 0.001)
+
+    params["update_time_steps"] = 2048
+    params["ppo_epochs"] = 6
+    params["gamma"] = 0.915450
+    params["beta"] =  0.001325
 
     print(params)
 
@@ -57,10 +62,12 @@ def objective(trial):
                 n_epochs=params["ppo_epochs"], gamma=params["gamma"], clip_range=params["clip"],
                 ent_coef=params["beta"], policy_kwargs={"net_arch": ppo_net_arch}, tensorboard_log="runs", verbose=1)
 
-    model_re = model.learn(total_timesteps=20000)
+    model_re = model.learn(total_timesteps=10000)
     returns = model_re.rollout_buffer.returns
 
     mean_reward, std_reward = evaluate_policy(model, model.get_env(), n_eval_episodes=10)
+
+    model.save("baseline_model")
 
     mean_returns = np.mean(returns)
     print("mean reward: {}, std reward : {}".format(mean_reward, std_reward))
@@ -77,19 +84,21 @@ if __name__ == '__main__':
     if len(sys.argv) > 1:
         worker_id = int(sys.argv[1])
 
+    objective(None)
+
     # run_exp()
-    name = 'crawler-JR-2'
-    db = 'sqlite:///example.db'
-    # study = optuna.load_study(study_name='crawler-JR', storage='sqlite:///example.db')
-    try:
-        study = optuna.load_study(study_name=name, storage=db)
-        print("------- load study successful")
-    except:
-        optuna.create_study(storage=db, study_name=name)
-        study = optuna.load_study(study_name=name, storage=db)
-        print("******* create and load study successful")
-    study.optimize(objective, n_trials=10000)
-    # optuna dashboard --study-name "crawler-JR" --storage "sqlite:///example.db"
+    # name = 'crawler-JR-2'
+    # db = 'sqlite:///example.db'
+    # # study = optuna.load_study(study_name='crawler-JR', storage='sqlite:///example.db')
+    # try:
+    #     study = optuna.load_study(study_name=name, storage=db)
+    #     print("------- load study successful")
+    # except:
+    #     optuna.create_study(storage=db, study_name=name)
+    #     study = optuna.load_study(study_name=name, storage=db)
+    #     print("******* create and load study successful")
+    # study.optimize(objective, n_trials=1)
+    # optuna dashboard --study-name "crawler-JR-2" --storage "sqlite:///example.db"
     # study = optuna.load_study(study_name='crawler-JR', storage='sqlite:///example.db')
     # optuna.load_study(study_name='crawler-JR', storage='sqlite:///example.db').trials_dataframe()
     # study.trials_dataframe()

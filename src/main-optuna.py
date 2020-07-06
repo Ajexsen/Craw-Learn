@@ -61,22 +61,21 @@ def episode(env, agent, params, writer, nr_episode=0):
 
 def objective(trial):
     # window_path = "../crawler_single/UnityEnvironment"
-    linux_path = "../crawler_single/linux/dynamic_server/crawler_dynamic.x86_64"
     global worker_id
     print("worker_id:", worker_id)
     linux_path = "../crawler_single/linux/dynamic_server/crawler_dynamic.x86_64"
     unity_env = UnityEnvironment(file_name=linux_path, worker_id=worker_id)
     env = UnityToGymWrapper(unity_env=unity_env)
 
-    env._max_episode_steps = 1500  # (default)
-    training_episodes = 5000
+    # env._max_episode_steps = 1500  # (default)
+    training_episodes = 1200
 
     params = {}
     params["nr_output_features"] = env.action_space.shape[0]
     params["nr_input_features"] = env.observation_space.shape[0]
     params["env"] = env
 
-    params["alpha"] = 3e-3
+    params["alpha"] = 3e-4
 
     params["tau"] = 0.95
     params["clip"] = 0.2
@@ -84,22 +83,22 @@ def objective(trial):
     params["minibatch_size"] = 32
     params["hidden_units"] = 512
 
-    params["update_time_steps"] = trial.suggest_int('update_time_steps', 1024, 7168, 1024)
-    params["ppo_epochs"] = trial.suggest_int('ppo_epochs', 2, 32, 2)
-    params["gamma"] = trial.suggest_float('gamma', 0.9, 0.99)  # , 0.01)
-    params["beta"] = trial.suggest_float('beta', 0.001, 0.1)  # , 0.001)
+    params["update_time_steps"] = trial.suggest_int(name='update_time_steps', low=2048, high=7168, step=1024)
+    params["ppo_epochs"] = trial.suggest_int(name='ppo_epochs', low=2, high=10, step=2)
+    params["gamma"] = trial.suggest_float(name='gamma', low=0.98, high=0.99, log=True)  # , 0.01)
+    params["beta"] = trial.suggest_float(name='beta', low=0.08, high=0.12, log=True)  # , 0.001)
 
     print(params)
 
-    t = str(np.random.randint(0, 1000)) + "_"
+    time_str = time.strftime("%y%m%d_%H")
+    t = "{}_{}".format(worker_id, time_str)
     print(t)
-    writer = SummaryWriter(log_dir='runs/alex', filename_suffix=t)
+    writer = SummaryWriter(log_dir='runs/alex/{}'.format(time_str), filename_suffix=t)
     agent = a.PPOLearner(params, writer)
 
     returns = [episode(env, agent, params, writer, i) for i in range(training_episodes)]
 
-    time_str = time.strftime("%y%m%d_%H")
-    torch.save(agent.ppo_net, "../Net_Crawler/PPONet_crawler{}_{}.pt".format(worker_id, time_str))
+    torch.save(agent.ppo_net, "../Net_Crawler/Alex/PPONet_crawler{}_{}.pt".format(worker_id, time_str))
     mean_reward, std_reward = evaluate_policy(agent.ppo_net, env, n_eval_episodes=10)
     print("{}, {}".format(mean_reward, std_reward))
 
@@ -125,7 +124,7 @@ if __name__ == '__main__':
         optuna.create_study(storage=db, study_name=name)
         study = optuna.load_study(study_name=name, storage=db)
         print("******* create and load study successful")
-    study.optimize(objective, n_trials=500)
+    study.optimize(objective, n_trials=1000)
     # optuna dashboard --study-name "crawler-JR" --storage "sqlite:///example.db"
     # study = optuna.load_study(study_name='crawler-JR', storage='sqlite:///example.db')
     # optuna.load_study(study_name='crawler-JR', storage='sqlite:///example.db').trials_dataframe()
