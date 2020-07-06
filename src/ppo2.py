@@ -28,23 +28,15 @@ class ReplayMemory:
         self.rewards.append(reward)
         self.dones.append(done)
 
-    def sample_batch(self, minibatch_size, next_value):
+    def sample_batch(self, next_value):
         returns = torch.stack(self.compute_gae(next_value)).detach()
         log_probs = torch.stack(self.log_probs).detach()
         values = torch.stack(self.values).detach()
         states = torch.stack(self.states)
         actions = torch.stack(self.actions)
         advantages = returns - values
-        batch_size = len(self.states)
-        ids = np.random.permutation(batch_size)
 
-        batch_count = batch_size // minibatch_size
-        # ids = np.split(ids, batch_count)
-        # split unevenly if odd
-        ids = np.array_split(ids, batch_count)
-
-        for i in range(len(ids)):
-            yield states[ids[i]], actions[ids[i]], log_probs[ids[i]], returns[ids[i]], advantages[ids[i]]
+        return states, actions, log_probs, returns, advantages
 
     def compute_gae(self, next_value):
         values = self.values + [next_value]
@@ -106,7 +98,6 @@ class PPOLearner:
         self.writer = writer
         self.nr_output_features = params["nr_output_features"]
         self.nr_input_features = params["nr_input_features"]
-        self.minibatch_size = params["minibatch_size"]
         self.hidden_units = params["hidden_units"]
         self.alpha = params["alpha"]
         self.beta = params["beta"]
@@ -133,27 +124,25 @@ class PPOLearner:
         _, next_value = self.predict(next_state)
 
         for _ in range(self.ppo_epochs):
+            states, actions, old_log_probs, returns, advantages = self.memory.sample_batch(next_value)
+            dists, values = self.ppo_net(states)
+            entropy = dists.entropy().mean()
+            new_log_probs = dists.log_prob(actions)
 
-            for states, actions, old_log_probs, returns, advantages in self.memory.sample_batch(self.minibatch_size,
-                                                                                                next_value):
-                dists, values = self.ppo_net(states)
-                entropy = dists.entropy().mean()
-                new_log_probs = dists.log_prob(actions)
+            ratios = (new_log_probs - old_log_probs).exp()
+            surrogate1 = ratios * advantages
+            surrogate2 = torch.clamp(ratios, 1.0 - self.clip_param, 1.0 + self.clip_param) * advantages
 
-                ratios = (new_log_probs - old_log_probs).exp()
-                surrogate1 = ratios * advantages
-                surrogate2 = torch.clamp(ratios, 1.0 - self.clip_param, 1.0 + self.clip_param) * advantages
+            actor_loss = - torch.min(surrogate1, surrogate2).mean()
+            critic_loss = (returns - values).pow(2).mean()
 
-                actor_loss = - torch.min(surrogate1, surrogate2).mean()
-                critic_loss = (returns - values).pow(2).mean()
+            loss = 0.5 * critic_loss + actor_loss - self.beta * entropy
+            self.writer.add_scalar('loss', loss, self.step)
+            self.writer.add_scalar('entropy - actor+criticloss', entropy - (actor_loss + critic_loss), self.step)
+            self.step += 1
 
-                loss = 0.5 * critic_loss + actor_loss - self.beta * entropy
-                self.writer.add_scalar('loss', loss, self.step)
-                self.writer.add_scalar('entropy - actor+criticloss', entropy - (actor_loss + critic_loss), self.step)
-                self.step += 1
-
-                self.optimizer.zero_grad()
-                loss.backward()
-                self.optimizer.step()
+            self.optimizer.zero_grad()
+            loss.backward()
+            self.optimizer.step()
 
         self.memory.clear()

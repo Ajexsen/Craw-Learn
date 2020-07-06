@@ -1,8 +1,8 @@
 # Development requirements
 # pip install -r requirements.txt
-gym
-gym_unity
-mlagents #==0.16.0
-tensorflow
-torch
-# git+git://github.com/openai/baselines
+gym==0.17.1
+gym_unity==0.17.0
+mlagents==0.16.1
+mlagents-envs==0.17.0
+tensorflow==2.2.0
+torch==1.5.0+cpu
