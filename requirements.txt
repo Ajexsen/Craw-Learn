@@ -4,5 +4,5 @@ gym==0.17.1
 gym_unity==0.17.0
 mlagents==0.16.1
 mlagents-envs==0.17.0
-tensorflow==2.2.0
-torch==1.5.0+cpu
+#tensorflow==2.2.0
+torch==1.5.0

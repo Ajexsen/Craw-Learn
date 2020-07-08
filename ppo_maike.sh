@@ -5,4 +5,4 @@
 #eval "$(conda shell.bash hook)"
 #conda activate Fedder_RL
 cd src
-python3 main.py ${1}
+python3 main2.py ${1}
