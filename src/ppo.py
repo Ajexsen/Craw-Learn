@@ -3,10 +3,6 @@ import torch.nn as nn
 from torch.distributions import Normal
 import numpy as np
 
-"""
- Experience Buffer for Deep RL Algorithms.
-"""
-
 
 class ReplayMemory:
 
@@ -36,11 +32,10 @@ class ReplayMemory:
         actions = torch.stack(self.actions)
         advantages = returns - values
         batch_size = len(self.states)
-        ids = np.random.permutation(batch_size)
 
+        # split into random minibatches
+        ids = np.random.permutation(batch_size)
         batch_count = batch_size // minibatch_size
-        # ids = np.split(ids, batch_count)
-        # split unevenly if odd
         ids = np.array_split(ids, batch_count)
 
         for i in range(len(ids)):
@@ -51,7 +46,9 @@ class ReplayMemory:
         gae = 0
         returns = []
         for step in reversed(range(len(self.rewards))):
+            # discounted sum of td residuals
             delta = self.rewards[step] + self.gamma * values[step + 1] * (1 - self.dones[step]) - values[step]
+            # generalized advantage estimator
             gae = delta + self.gamma * self.tau * (1 - self.dones[step]) * gae
             returns.insert(0, gae + values[step])
         return returns
@@ -102,22 +99,24 @@ class PPONet(nn.Module):
 class PPOLearner:
 
     def __init__(self, params, writer):
+        self.memory = ReplayMemory(self.gamma, self.tau)
         self.device = torch.device("cpu")
-        self.writer = writer
-        self.nr_output_features = params["nr_output_features"]
         self.nr_input_features = params["nr_input_features"]
-        self.minibatch_size = params["minibatch_size"]
+        self.nr_output_features = params["nr_output_features"]
         self.hidden_units = params["hidden_units"]
-        self.alpha = params["alpha"]
+        self.ppo_net = PPONet(self.nr_input_features, self.nr_output_features, self.hidden_units).to(self.device)
+        self.minibatch_size = params["minibatch_size"]
+        self.lr = params["lr"]
         self.beta = params["beta"]
         self.gamma = params["gamma"]
         self.tau = params["tau"]
-        self.memory = ReplayMemory(self.gamma, self.tau)
-        self.ppo_net = PPONet(self.nr_input_features, self.nr_output_features, self.hidden_units).to(self.device)
-        self.optimizer = torch.optim.Adam(self.ppo_net.parameters(), lr=self.alpha)
         self.ppo_epochs = params["ppo_epochs"]
         self.clip_param = params["clip"]
-        self.step = 0
+        self.optimizer = torch.optim.Adam(self.ppo_net.parameters(), lr=self.lr)
+        # for tensorboard
+        self.writer = writer
+        self.step_counter = 0
+
 
     def policy(self, state):
         action_dist, value = self.predict(state)
@@ -134,6 +133,7 @@ class PPOLearner:
 
         for _ in range(self.ppo_epochs):
 
+            # sample batch computes returns with generalized advantage estimator as value function
             for states, actions, old_log_probs, returns, advantages in self.memory.sample_batch(self.minibatch_size,
                                                                                                 next_value):
                 dists, values = self.ppo_net(states)
@@ -141,19 +141,23 @@ class PPOLearner:
                 new_log_probs = dists.log_prob(actions)
 
                 ratios = (new_log_probs - old_log_probs).exp()
+                # unclipped objective
                 surrogate1 = ratios * advantages
+                # clipped objective
                 surrogate2 = torch.clamp(ratios, 1.0 - self.clip_param, 1.0 + self.clip_param) * advantages
 
+                # take the minimum of the clipped and unclipped objective
                 actor_loss = - torch.min(surrogate1, surrogate2).mean()
+                # mean squared error
                 critic_loss = (returns - values).pow(2).mean()
-
+                # goal is to maximize total loss
                 loss = 0.5 * critic_loss + actor_loss - self.beta * entropy
-                self.writer.add_scalar('loss', loss, self.step)
-                self.writer.add_scalar('entropy - actor+criticloss', entropy - (actor_loss + critic_loss), self.step)
-                self.step += 1
 
                 self.optimizer.zero_grad()
                 loss.backward()
                 self.optimizer.step()
+
+                self.writer.add_scalar('loss', loss, self.step_counter)
+                self.step_counter += 1
 
         self.memory.clear()
