@@ -47,9 +47,9 @@ def episode(env, agent, nr_episode=0):
 
 
 # Domain setup
-window_path = "../crawler_single/UnityEnvironment"
-# linux_path = "../crawler_single/linux/dynamic_server/crawler_dynamic.x86_64"
-unity_env = UnityEnvironment(file_name=window_path, seed=1, side_channels=[])
+#window_path = "../crawler_single/UnityEnvironment"
+linux_path = "../crawler_single/linux/dynamic_server/crawler_dynamic.x86_64"
+unity_env = UnityEnvironment(file_name=linux_path, seed=1, side_channels=[])
 env = UnityToGymWrapper(unity_env=unity_env)
 
 # env._max_episode_steps = 30 # (default)
@@ -71,7 +71,7 @@ params["clip"] = 0.2
 
 # (Alex) 1024 nodes, 32 mini batch size
 # hidden_units: 2^x, bigger as input [256, 512]
-params["hidden_units"] = 512
+params["hidden_units"] = 256
 
 params["nr_output_features"] = env.action_space.shape[0]
 params["nr_input_features"] = env.observation_space.shape[0]
@@ -81,8 +81,8 @@ params["env"] = env
 # min. two layer
 training_episodes = 5000
 
-params["update_episodes"] = 10
-params["ppo_epochs"] = 16
+params["update_episodes"] = 20
+params["ppo_epochs"] = 4
 params["beta"] = 0.05
 params["gamma"] = 0.99
 

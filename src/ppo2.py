@@ -67,15 +67,11 @@ class PPONet(nn.Module):
             nn.ReLU(),
             nn.Linear(hidden_units, hidden_units),
             nn.ReLU(),
-            nn.Linear(hidden_units, hidden_units),
-            nn.ReLU(),
             nn.Linear(hidden_units, 1)
         )
 
         self.actor = nn.Sequential(
             nn.Linear(num_inputs, hidden_units),
-            nn.ReLU(),
-            nn.Linear(hidden_units, hidden_units),
             nn.ReLU(),
             nn.Linear(hidden_units, hidden_units),
             nn.ReLU(),
