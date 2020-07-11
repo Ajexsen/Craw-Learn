@@ -19,9 +19,9 @@ Um den Lauf zu starten, installiere alle Anforderungen, die in `requirements.txt
 
 Wir haben zwei leicht variierte PPOs, eine Version mit Mininbatch und eine ohne Minibatch (Default Version).
 
-python main.py <unity-worker-id> <ppo-var>
-unity-worker-id: eine beliebige Ganzzahl (default: 0)
-ppo-var = 0: ohne Minibatch, ppo-var >= 1: mit Mininbatch (default: 0)
+python main.py \<**unity-worker-id**\> \<**ppo-var**\>  
+**unity-worker-id**: eine beliebige Ganzzahl (default: 0)  
+**ppo-var** = 0: ohne Minibatch, >= 1: mit Mininbatch (default: 0)  
 
 ### gutes Parametersetting für Version mit Minibatch
 * lr = 3e-4
