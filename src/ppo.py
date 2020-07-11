@@ -3,10 +3,6 @@ import torch.nn as nn
 from torch.distributions import Normal
 import numpy as np
 
-"""
- Experience Buffer for Deep RL Algorithms.
-"""
-
 
 class ReplayMemory:
 
@@ -20,7 +16,6 @@ class ReplayMemory:
         self.rewards = []
         self.dones = []
 
-
     def save(self, log_prob, value, state, action, reward, done):
         self.log_probs.append(log_prob)
         self.values.append(value)
@@ -29,8 +24,7 @@ class ReplayMemory:
         self.rewards.append(reward)
         self.dones.append(done)
 
-
-    def sample_batch(self, minibatch_size, next_value):
+    def get_batch(self, next_value):
         returns = torch.stack(self.compute_gae(next_value)).detach()
         log_probs = torch.stack(self.log_probs).detach()
         values = torch.stack(self.values).detach()
@@ -38,14 +32,7 @@ class ReplayMemory:
         actions = torch.stack(self.actions)
         advantages = returns - values
 
-        # split into random minibatches
-        batch_size = len(self.states)
-        ids = np.random.permutation(batch_size)
-        batch_count = batch_size // minibatch_size
-        ids = np.array_split(ids, batch_count)
-        for i in range(len(ids)):
-            yield states[ids[i]], actions[ids[i]], log_probs[ids[i]], returns[ids[i]], advantages[ids[i]]
-
+        return states, actions, log_probs, returns, advantages
 
     def compute_gae(self, next_value):
         values = self.values + [next_value]
@@ -59,7 +46,6 @@ class ReplayMemory:
             returns.insert(0, gae + values[step])
         return returns
 
-
     def clear(self):
         self.log_probs.clear()
         self.values.clear()
@@ -67,11 +53,6 @@ class ReplayMemory:
         self.actions.clear()
         self.rewards.clear()
         self.dones.clear()
-
-
-
-
-
 
 
 class PPONet(nn.Module):
@@ -108,11 +89,6 @@ class PPONet(nn.Module):
         return dist, value
 
 
-
-
-
-
-
 class PPOLearner:
 
     def __init__(self, params, writer):
@@ -125,7 +101,6 @@ class PPOLearner:
         self.ppo_net = PPONet(self.nr_input_features, self.nr_output_features, self.hidden_units).to(self.device)
         self.optimizer = torch.optim.Adam(self.ppo_net.parameters(), lr=self.lr)
 
-        self.minibatch_size = params["minibatch_size"]
         self.ppo_epochs = params["ppo_epochs"]
         self.clip_param = params["clip"]
         self.beta = params["beta"]
@@ -138,13 +113,11 @@ class PPOLearner:
         self.writer = writer
         self.step_counter = 0
 
-
     def policy(self, state):
         action_dist, value = self.predict(state)
         action = action_dist.sample().cpu()
         log_prob = action_dist.log_prob(action)
         return action, log_prob, value
-
 
     def predict(self, state):
         state = torch.FloatTensor(state).unsqueeze(0).to(self.device)
@@ -155,34 +128,32 @@ class PPOLearner:
         _, next_value = self.predict(next_state)
 
         for _ in range(self.ppo_epochs):
-            # sample a random minibatch with computed generalised advantage estimation
-            for states, actions, old_log_probs, returns, advantages in self.memory.sample_batch(self.minibatch_size, next_value):
-                dists, values = self.ppo_net(states)
-                entropy = dists.entropy().mean()
-                new_log_probs = dists.log_prob(actions)
+            # get memory with computed generalised advantage estimation
+            states, actions, old_log_probs, returns, advantages = self.memory.get_batch(next_value)
+            dists, values = self.ppo_net(states)
+            entropy = dists.entropy().mean()
+            new_log_probs = dists.log_prob(actions)
 
-                ratios = (new_log_probs - old_log_probs).exp()
+            ratios = (new_log_probs - old_log_probs).exp()
 
-                # unclipped objective
-                surrogate1 = ratios * advantages
-                # clipped objective
-                surrogate2 = torch.clamp(ratios, 1.0 - self.clip_param, 1.0 + self.clip_param) * advantages
+            # unclipped objective
+            surrogate1 = ratios * advantages
+            # clipped objective
+            surrogate2 = torch.clamp(ratios, 1.0 - self.clip_param, 1.0 + self.clip_param) * advantages
 
-                # take the minimum of the clipped and unclipped objective
-                actor_loss = - torch.min(surrogate1, surrogate2).mean()
+            # take the minimum of the clipped and unclipped objective
+            actor_loss = - torch.min(surrogate1, surrogate2).mean()
+            # mean squared error
+            critic_loss = (returns - values).pow(2).mean()
+            # overall loss
+            loss = 0.5 * critic_loss + actor_loss - self.beta * entropy
 
-                # mean squared error
-                critic_loss = (returns - values).pow(2).mean()
+            self.optimizer.zero_grad()
+            loss.backward()
+            self.optimizer.step()
 
-                # overall loss
-                loss = 0.5 * critic_loss + actor_loss - self.beta * entropy
-
-                self.optimizer.zero_grad()
-                loss.backward()
-                self.optimizer.step()
-
-                self.writer.add_scalar('loss', loss, self.step_counter)
-                self.writer.add_scalar('entropy - actor+criticloss', entropy - (actor_loss + critic_loss), self.step_counter)
-                self.step_counter += 1
+            self.writer.add_scalar('loss', loss, self.step)
+            self.writer.add_scalar('entropy - actor+criticloss', entropy - (actor_loss + critic_loss), self.step)
+            self.step_counter += 1
 
         self.memory.clear()

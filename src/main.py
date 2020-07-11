@@ -1,10 +1,12 @@
 from torch.utils.tensorboard import SummaryWriter
 import torch
-import src.ppo as a
+
+import ppo
+import ppo_minibatch
+
 from gym_unity.envs import UnityToGymWrapper
 from mlagents_envs.environment import UnityEnvironment
-from src.evaluate import evaluate_policy
-
+from evaluate import evaluate_policy
 
 
 def episode(env, agent, nr_episode=0):
@@ -39,17 +41,13 @@ def episode(env, agent, nr_episode=0):
     return undiscounted_return
 
 
-
-
-
-
-
-
 if __name__ == "__main__":
     # Domain setup
-    windows_path = "../crawler_single/UnityEnvironment"
-    # linux_path = "../crawler_single/linux/dynamic_server/crawler_dynamic.x86_64"
-    unity_env = UnityEnvironment(file_name=windows_path, seed=1, side_channels=[], no_graphics=False)
+    # windows_path = "../crawler_single/UnityEnvironment"
+    # build_path = windows_path
+    linux_path = "../crawler_single/linux/dynamic_server/crawler_dynamic.x86_64"
+    build_path = linux_path
+    unity_env = UnityEnvironment(file_name=build_path, seed=1, side_channels=[], no_graphics=False)
     env = UnityToGymWrapper(unity_env=unity_env)
 
     params = {}
@@ -77,11 +75,12 @@ if __name__ == "__main__":
 
     # Agent setup
     writer = SummaryWriter()
-    agent = a.PPOLearner(params, writer)
 
+    agent = ppo.PPOLearner(params, writer)
+    #agent = ppo_minibatch.PPOLearner(params, writer)
 
-    returns = []
-    for i in range(1, training_episodes+1):
-        returns.append(episode(env, agent, i))
+    returns = [episode(env, agent, i) for i in range(1, training_episodes + 1)]
+    mean_reward, std_reward = evaluate_policy(agent.ppo_net, env, n_eval_episodes=10)
+    print("{}, {}".format(mean_reward, std_reward))
 
     writer.close()
