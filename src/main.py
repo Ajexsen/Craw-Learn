@@ -52,9 +52,9 @@ if __name__ == "__main__":
         worker_id = int(sys.argv[1])
 
     # Domain setup
-    # windows_path = "../crawler_single/UnityEnvironment"
+    # windows_path = "../crawler_build/windows/dynamic/UnityEnvironment"
     # build_path = windows_path
-    linux_path = "../crawler_single/linux/dynamic_server/crawler_dynamic.x86_64"
+    linux_path = "../crawler_build/linux/dynamic_server/crawler_dynamic.x86_64"
     build_path = linux_path
     unity_env = UnityEnvironment(file_name=build_path, seed=1, side_channels=[], no_graphics=False)
     env = UnityToGymWrapper(unity_env=unity_env)
@@ -76,7 +76,7 @@ if __name__ == "__main__":
     params["beta"] = 0.05
     params["gamma"] = 0.995
     params["tau"] = 0.95
-    params["std"] = 1.0
+    params["std"] = 0.35
 
     print("worker id:, {}, update_episodes: {}, epochs: {}, beta: {}, gamma: {}".format(worker_id, params["update_episodes"], params["ppo_epochs"], params["beta"], params["gamma"]))
 
