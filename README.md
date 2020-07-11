@@ -27,3 +27,4 @@ Um den Lauf zu starten, installiere alle Anforderungen, die in `requirements.txt
 * ppo_epochs = 8
 * beta = 0.05
 * gamma = 0.99
+* std = 1.0

@@ -50,6 +50,8 @@ if __name__ == "__main__":
     unity_env = UnityEnvironment(file_name=build_path, seed=1, side_channels=[], no_graphics=False)
     env = UnityToGymWrapper(unity_env=unity_env)
 
+    training_episodes = 10000
+
     params = {}
 
     params["nr_output_features"] = env.action_space.shape[0]
@@ -57,7 +59,6 @@ if __name__ == "__main__":
     params["env"] = env
 
     params["lr"] = 3e-4
-
     params["clip"] = 0.2
     params["hidden_units"] = 512
     params["update_episodes"] = 10
@@ -66,9 +67,7 @@ if __name__ == "__main__":
     params["beta"] = 0.05
     params["gamma"] = 0.995
     params["tau"] = 0.95
-
-    training_episodes = 50000
-
+    params["std"] = 0.35
 
     print("update_episodes:", params["update_episodes"], ", ppo_epochs:", params["ppo_epochs"], ", beta: ", params["beta"],
           ", gamma", params["gamma"])

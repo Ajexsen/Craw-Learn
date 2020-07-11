@@ -79,12 +79,12 @@ class PPONet(nn.Module):
             nn.ReLU(),
             nn.Linear(hidden_units, num_outputs)
         )
-        self.log_std = nn.Parameter(torch.ones(1, num_outputs) * std)
+        self.std = nn.Parameter(torch.ones(1, num_outputs) * std)
 
     def forward(self, state):
         value = self.critic(state)
         mu = self.actor(state)
-        std = self.log_std.exp().expand_as(mu)
+        std = self.std.expand_as(mu)
         dist = Normal(mu, std)
         return dist, value
 
@@ -152,8 +152,9 @@ class PPOLearner:
             loss.backward()
             self.optimizer.step()
 
-            self.writer.add_scalar('loss', loss, self.step)
-            self.writer.add_scalar('entropy - actor+criticloss', entropy - (actor_loss + critic_loss), self.step)
-            self.step_counter += 1
+            if self.writer is not None:
+                self.writer.add_scalar('loss', loss, self.step)
+                self.writer.add_scalar('entropy - actor+criticloss', entropy - (actor_loss + critic_loss), self.step)
+                self.step += 1
 
         self.memory.clear()

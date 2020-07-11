@@ -89,12 +89,12 @@ class PPONet(nn.Module):
             nn.ReLU(),
             nn.Linear(hidden_units, num_outputs)
         )
-        self.log_std = nn.Parameter(torch.ones(1, num_outputs) * std)
+        self.std = nn.Parameter(torch.ones(1, num_outputs) * std)
 
     def forward(self, state):
         value = self.critic(state)
         mu = self.actor(state)
-        std = self.log_std.exp().expand_as(mu)
+        std = self.std.expand_as(mu)
         dist = Normal(mu, std)
         return dist, value
 
@@ -108,7 +108,8 @@ class PPOLearner:
         self.nr_input_features = params["nr_input_features"]
         self.hidden_units = params["hidden_units"]
         self.lr = params["lr"]
-        self.ppo_net = PPONet(self.nr_input_features, self.nr_output_features, self.hidden_units).to(self.device)
+        self.std = params["std"]
+        self.ppo_net = PPONet(self.nr_input_features, self.nr_output_features, self.hidden_units, self.std).to(self.device)
         self.optimizer = torch.optim.Adam(self.ppo_net.parameters(), lr=self.lr)
 
         self.minibatch_size = params["minibatch_size"]
@@ -165,8 +166,9 @@ class PPOLearner:
                 loss.backward()
                 self.optimizer.step()
 
-                self.writer.add_scalar('loss', loss, self.step_counter)
-                self.writer.add_scalar('entropy - actor+criticloss', entropy - (actor_loss + critic_loss), self.step_counter)
-                self.step_counter += 1
+                if self.writer is not None:
+                    self.writer.add_scalar('loss', loss, self.step)
+                    self.writer.add_scalar('entropy - actor+criticloss', entropy - (actor_loss + critic_loss), self.step)
+                    self.step += 1
 
         self.memory.clear()
