@@ -48,8 +48,11 @@ def episode(env, agent, nr_episode=0):
 
 if __name__ == "__main__":
     worker_id = 0
+    ppo_var = 0 # 0 no minibatch, >=1 minibatch
     if len(sys.argv) > 1:
         worker_id = int(sys.argv[1])
+    if len(sys.argv) > 2:
+        ppo_var = int(sys.argv[2])
 
     # Domain setup
     # windows_path = "../crawler_build/windows/dynamic/UnityEnvironment"
@@ -83,8 +86,12 @@ if __name__ == "__main__":
     # Agent setup
     writer = SummaryWriter()
 
-    # agent = ppo.PPOLearner(params, writer)
-    agent = ppo_minibatch.PPOLearner(params, writer)
+    if ppo_var == 0:
+        agent = ppo.PPOLearner(params, writer)
+        print("-- using PPO without minibatch")
+    else:
+        agent = ppo_minibatch.PPOLearner(params, writer)
+        print("-- using PPO with minibatch")
 
     time_str = time.strftime("%y%m%d_%H%M")
     returns = [episode(env, agent, i) for i in range(1, training_episodes + 1)]
