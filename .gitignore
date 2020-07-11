@@ -3,4 +3,6 @@
 /.idea
 /src/runs
 /crawler_single
+/src/__pycache__
+/__pycache__
 
