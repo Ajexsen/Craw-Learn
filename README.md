@@ -23,7 +23,7 @@ Um den Lauf zu starten, installiere alle Anforderungen, die in `requirements.txt
 * clip = 0.2
 * hidden_units = 512
 * minibatch_size = 32
-* update_time_steps = 12500
-* ppo_epochs = 16
+* update_episodes = 15
+* ppo_epochs = 8
 * beta = 0.05
 * gamma = 0.99
