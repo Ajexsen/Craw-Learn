@@ -1,18 +1,24 @@
-# Federer-Jr.
+# Federer-Jr. / Crawlearn
 
-Crawler
-UnityToGymWrapper
-Pytorch
-Optuna
-Tensorboard
+## Aufgabe
 
-## Fragen
-* Warum funktioniert unser Algorithmus bei Windows und nicht bei Linux?
-* Haben bei Windows Tanh() nicht gebraucht, warum?
-* Wie lange sollte es bis zu einem guten Ergebnis dauern?
+Implementiere einen Reinforcement Learning Algorithmus und löse damit eine kontinuierliche ML-Agents Domäne.
 
-## gutes Parametersetting
-* alpha = 3e-4
+## Ausführung
+
+Wir haben die Proximal Policy Optimization (PPO) implementiert und damit den Crawler gelöst.
+Dafür haben wir verschiedene Tools genutzt:
+- UnityToGymWrapper
+- Pytorch
+- Optuna
+- Tensorboard
+
+## Starte einen Trainingslauf
+
+Um den Lauf zu starten, installiere alle Anforderungen, die in `requirements.txt` enthalten sind.
+
+### gutes Parametersetting (für main.py)
+* lr = 3e-4
 * tau = 0.95
 * clip = 0.2
 * hidden_units = 512
@@ -21,12 +27,3 @@ Tensorboard
 * ppo_epochs = 16
 * beta = 0.05
 * gamma = 0.99
-
-#### Parameter
-
-* update_time_steps 2048 - open end
-* epochs 3-32
-* beta 0.001 - 0.1
-* gamma 0.9 - 0.99
-* layers 2 - 8
-* (clip 0.1 - 0.3)
