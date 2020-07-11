@@ -67,7 +67,7 @@ class ReplayMemory:
 
 class PPONet(nn.Module):
 
-    def __init__(self, num_inputs, num_outputs, hidden_units, std=0.0):
+    def __init__(self, num_inputs, num_outputs, hidden_units, std=1.0):
         super(PPONet, self).__init__()
 
         self.critic = nn.Sequential(
@@ -167,8 +167,8 @@ class PPOLearner:
                 self.optimizer.step()
 
                 if self.writer is not None:
-                    self.writer.add_scalar('loss', loss, self.step)
-                    self.writer.add_scalar('entropy - actor+criticloss', entropy - (actor_loss + critic_loss), self.step)
-                    self.step += 1
+                    self.writer.add_scalar('loss', loss, self.step_counter)
+                    self.writer.add_scalar('entropy - actor+criticloss', entropy - (actor_loss + critic_loss), self.step_counter)
+                    self.step_counter += 1
 
         self.memory.clear()

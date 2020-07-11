@@ -1,4 +1,4 @@
-# Federer-Jr. / Crawlearn
+# Craw-Learn
 
 ## Aufgabe
 
@@ -17,7 +17,9 @@ Dafür haben wir verschiedene Tools genutzt:
 
 Um den Lauf zu starten, installiere alle Anforderungen, die in `requirements.txt` enthalten sind.
 
-### gutes Parametersetting (für main.py)
+Wir haben zwei leicht variierte PPOs, eine Version mit Mininbatch und eine ohne Minibatch (Default Version).
+
+### gutes Parametersetting für Version mit Minibatch
 * lr = 3e-4
 * tau = 0.95
 * clip = 0.2
@@ -28,3 +30,15 @@ Um den Lauf zu starten, installiere alle Anforderungen, die in `requirements.txt
 * beta = 0.05
 * gamma = 0.99
 * std = 1.0
+
+
+### gutes Parametersetting für Version ohne Minibatch
+* lr = 3e-4
+* tau = 0.95
+* clip = 0.2
+* hidden_units = 512
+* update_episodes = 15
+* ppo_epochs = 5
+* beta = 0.05
+* gamma = 0.99
+* std = 0.35

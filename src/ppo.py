@@ -57,7 +57,7 @@ class ReplayMemory:
 
 class PPONet(nn.Module):
 
-    def __init__(self, num_inputs, num_outputs, hidden_units, std=0.0):
+    def __init__(self, num_inputs, num_outputs, hidden_units, std=1.0):
         super(PPONet, self).__init__()
 
         self.critic = nn.Sequential(
@@ -98,7 +98,8 @@ class PPOLearner:
         self.nr_input_features = params["nr_input_features"]
         self.hidden_units = params["hidden_units"]
         self.lr = params["lr"]
-        self.ppo_net = PPONet(self.nr_input_features, self.nr_output_features, self.hidden_units).to(self.device)
+        self.std = params["std"]
+        self.ppo_net = PPONet(self.nr_input_features, self.nr_output_features, self.hidden_units, self.std).to(self.device)
         self.optimizer = torch.optim.Adam(self.ppo_net.parameters(), lr=self.lr)
 
         self.ppo_epochs = params["ppo_epochs"]
@@ -153,8 +154,8 @@ class PPOLearner:
             self.optimizer.step()
 
             if self.writer is not None:
-                self.writer.add_scalar('loss', loss, self.step)
-                self.writer.add_scalar('entropy - actor+criticloss', entropy - (actor_loss + critic_loss), self.step)
-                self.step += 1
+                self.writer.add_scalar('loss', loss, self.step_counter)
+                self.writer.add_scalar('entropy - actor+criticloss', entropy - (actor_loss + critic_loss), self.step_counter)
+                self.step_counter += 1
 
         self.memory.clear()
