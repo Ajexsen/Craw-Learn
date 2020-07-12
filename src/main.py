@@ -1,6 +1,6 @@
 import ppo
 import ppo_minibatch
-from evaluate import evaluate_policy
+from evaluate import evaluate_model
 
 from gym_unity.envs import UnityToGymWrapper
 from mlagents_envs.environment import UnityEnvironment
@@ -12,13 +12,13 @@ import time
 import os
 import sys
 
+
 def episode(env, agent, nr_episode=0):
     state = env.reset()
     undiscounted_return = 0
     done = False
 
     while not done:
-        # env.render()
         # 1. Select action according to policy
         action, log_prob, value = agent.policy(state)
         # 2. Execute selected action
@@ -47,43 +47,57 @@ def episode(env, agent, nr_episode=0):
 
 
 if __name__ == "__main__":
-    worker_id = 0
-    ppo_var = 0 # 0 no minibatch, >=1 minibatch
+    worker_id = 40
+    ppo_var = 0  # 0 no minibatch, >=1 minibatch
+
     if len(sys.argv) > 1:
         worker_id = int(sys.argv[1])
     if len(sys.argv) > 2:
         ppo_var = int(sys.argv[2])
 
     # Domain setup
+
     # windows_path = "../crawler_build/windows/dynamic/UnityEnvironment"
     # build_path = windows_path
     linux_path = "../crawler_build/linux/dynamic_server/crawler_dynamic.x86_64"
     build_path = linux_path
-    unity_env = UnityEnvironment(file_name=build_path, seed=1, side_channels=[], no_graphics=False)
-    env = UnityToGymWrapper(unity_env=unity_env)
+
+    unity_env = UnityEnvironment(file_name=build_path, worker_id=worker_id)
+    crawler_env = UnityToGymWrapper(unity_env=unity_env)
 
     training_episodes = 10000
 
     params = {}
 
-    params["nr_output_features"] = env.action_space.shape[0]
-    params["nr_input_features"] = env.observation_space.shape[0]
-    params["env"] = env
+    params["nr_output_features"] = crawler_env.action_space.shape[0]
+    params["nr_input_features"] = crawler_env.observation_space.shape[0]
+    params["env"] = crawler_env
+
+    params["update_episodes"] = 10
+    params["ppo_epochs"] = 4
+    params["minibatch_size"] = 32
 
     params["lr"] = 3e-4
     params["clip"] = 0.2
     params["hidden_units"] = 512
-    params["update_episodes"] = 10
-    params["ppo_epochs"] = 3
-    params["minibatch_size"] = 32
+
     params["beta"] = 0.05
     params["gamma"] = 0.995
     params["tau"] = 0.95
     params["std"] = 0.35
 
-    print("worker id:, {}, update_episodes: {}, epochs: {}, beta: {}, gamma: {}".format(worker_id, params["update_episodes"], params["ppo_epochs"], params["beta"], params["gamma"]))
+    time_str = time.strftime("%y%m%d_%H%M")
+    print("[{}] - worker id:, {}, update_episodes: {}, epochs: {}, beta: {}, gamma: {}".format(time_str,
+                                                                                               worker_id, params[
+                                                                                                   "update_episodes"],
+                                                                                               params["ppo_epochs"],
+                                                                                               params["beta"],
+                                                                                               params["gamma"]))
+    print(params)
+
 
     # Agent setup
+
     writer = SummaryWriter()
 
     if ppo_var == 0:
@@ -93,9 +107,8 @@ if __name__ == "__main__":
         agent = ppo_minibatch.PPOLearner(params, writer)
         print("-- using PPO with minibatch")
 
-    time_str = time.strftime("%y%m%d_%H%M")
-    returns = [episode(env, agent, i) for i in range(1, training_episodes + 1)]
-    mean_reward, std_reward = evaluate_policy(agent.ppo_net, env, n_eval_episodes=10)
+    returns = [episode(crawler_env, agent, i) for i in range(1, training_episodes + 1)]
+    mean_reward, std_reward = evaluate_model(agent.ppo_net, crawler_env, n_eval_episodes=10)
     print("{}, {}".format(mean_reward, std_reward))
 
     writer.close()

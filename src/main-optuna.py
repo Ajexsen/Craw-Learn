@@ -9,7 +9,7 @@ from gym_unity.envs import UnityToGymWrapper
 from mlagents_envs.environment import UnityEnvironment
 import numpy as np
 
-from evaluate import evaluate_policy
+from evaluate import evaluate_model
 import optuna
 import numpy as np
 
@@ -94,7 +94,7 @@ def objective(trial):
     returns = [episode(env, agent, params, writer, i) for i in range(training_episodes)]
 
     torch.save(agent.ppo_net, "../Net_Crawler/Alex/PPONet_crawler{}_{}.pt".format(worker_id, time_str))
-    mean_reward, std_reward = evaluate_policy(agent.ppo_net, env, n_eval_episodes=10)
+    mean_reward, std_reward = evaluate_model(agent.ppo_net, env, n_eval_episodes=10)
     print("{}, {}".format(mean_reward, std_reward))
 
     writer.close()

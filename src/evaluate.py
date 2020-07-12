@@ -1,11 +1,8 @@
 import numpy as np
 import torch
 
-from gym_unity.envs import UnityToGymWrapper
-from mlagents_envs.environment import UnityEnvironment
-
-
-def evaluate_policy(model, env, n_eval_episodes=10, render=False, return_episode_rewards=False):
+# evaluate
+def evaluate_model(model, env, n_eval_episodes=10, render=False, return_episode_rewards=False):
 
     episode_rewards, episode_lengths = [], []
     for _ in range(n_eval_episodes):
@@ -23,7 +20,7 @@ def evaluate_policy(model, env, n_eval_episodes=10, render=False, return_episode
             action = action.detach()
             log_prob = log_prob.detach()
             state = torch.FloatTensor(state).unsqueeze(0).to(torch.device("cpu")).detach()
-            agent.memory.save(log_prob, value, state, action, reward, done)
+            model.memory.save(log_prob, value, state, action, reward, done)
 
             state = next_state
             episode_reward += reward
@@ -32,7 +29,7 @@ def evaluate_policy(model, env, n_eval_episodes=10, render=False, return_episode
                 env.render()
         episode_rewards.append(episode_reward)
         episode_lengths.append(episode_length)
-    # print(episode_rewards)
+    print(episode_rewards)
     mean_reward = np.mean(episode_rewards)
     std_reward = np.std(episode_rewards)
 
